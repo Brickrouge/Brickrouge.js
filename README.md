@@ -41,13 +41,13 @@ The following example demonstrates how to create a widget that creates a clone o
 
 ## Running Brickrouge
 
-The `run()` method is used to run Brickrouge. The method instantiates the widgets found in `document.body`, then waits for DOM mutations to instantiate new widgets. The best place to invoke the method is a _DOM ready_ callback:
+`Brickrouge.run()` is used to run Brickrouge. The method instantiates the widgets found in `document.body`, then waits for DOM mutations to instantiate new widgets. The best place to invoke the method is a _DOM ready_ callback:
 
 ```js
 document.addEventListener('DOMContentLoaded', Brickrouge.run)
 ```
 
-If the browser doesn't provide the `MutationObserver` interface, or if you want to parse a container yourself you can use the `parse()` method:
+If the browser doesn't provide the [MutationObserver][] interface, or if you want to parse a container yourself you can use the `parse()` method:
 
 ```js
 Brickrouge.parse()
@@ -62,8 +62,16 @@ Brickrouge.parse(document.getElementById('my-container'))
 
 ## Helpers
 
+- `Brickrouge.isWidget()`: whether the element is a widget.
+
 - `Brickrouge.uidOf()`: returns the unique identifier associated with an element. If the `uniqueNumber` property is available it will return it, otherwise it creates a unique identifier of its own.
 
 - `Brickrouge.Dataset.from()`: returns the dataset values associated with and element.
 
 - `Brickrouge.from()` or `Brickrouge.Widget.from()`: returns the widget associated with an element and creates it if needed.
+
+
+
+
+
+[MutationObserver]: https://developer.mozilla.org/en/docs/Web/API/MutationObserver

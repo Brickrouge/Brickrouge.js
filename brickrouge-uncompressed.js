@@ -10,7 +10,7 @@ var Brickrouge = {}
 		Brickrouge.Widget.monitor()
 	}
 
-} (Brickrouge)
+} (Brickrouge);
 !function(Brickrouge) {
 
 	"use strict";
@@ -20,7 +20,7 @@ var Brickrouge = {}
 	/**
 	 * Returns the unique identifier a node.
 	 *
-	 * @param {Element} node
+	 * @param {Node} node
 	 *
 	 * @return {number}
 	 */
@@ -81,7 +81,7 @@ var Brickrouge = {}
 
 	"use strict";
 
-    var /** @const **/ OBSERVER_PROPERTY = '$brickrouge:observers'
+	var /** @const **/ OBSERVER_PROPERTY = '$brickrouge:observers'
 
 	/**
 	 * @interface
@@ -94,6 +94,8 @@ var Brickrouge = {}
 		 * Returns the observers array.
 		 *
 		 * @protected
+		 *
+		 * @param {string|null} type The event type, of `null` to get all observers.
 		 *
 		 * @return {Array}
 		 */
@@ -148,10 +150,8 @@ var Brickrouge = {}
 
 			var observers = this.getObservers(), type, typeObservers, k
 
-			for (type in observers)
+			for (type in Object.keys(observers))
 			{
-				if (!observers.hasOwnProperty(type)) continue
-
 				typeObservers = observers[type]
 				k = typeObservers.indexOf(callback)
 
@@ -200,7 +200,7 @@ var Brickrouge = {}
 	Brickrouge.notifyObservers = Subject.prototype.notifyObservers
 	Brickrouge.getObservers = Subject.prototype.getObservers
 
-} (Brickrouge)
+} (Brickrouge);
 !function(Brickrouge) {
 
 	"use strict";
@@ -217,7 +217,7 @@ var Brickrouge = {}
 	 *
 	 * @param {string} type Widget type.
 	 *
-	 * @return {function} function
+	 * @return {function} Widget factory.
 	 *
 	 * @throws Error in attempt to use a type for which no factory is defined.
 	 */
@@ -281,7 +281,7 @@ var Brickrouge = {}
 
 		if (!type)
 		{
-			throw new Error("The " + IS_ATTRIBUTE + " attribute is not defined.")
+			throw new Error("The " + IS_ATTRIBUTE + " attribute is not defined or empty.")
 		}
 
 		widget = factory(type)(element, resolveOptions(element))
@@ -396,6 +396,7 @@ var Brickrouge = {}
 	Brickrouge.isWidget = isWidget
 	Brickrouge.register = register
 	Brickrouge.parse = parse
+	Brickrouge.from = from
 
 	Brickrouge.Widget = {
 

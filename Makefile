@@ -3,7 +3,7 @@ BRICKROUGE_JS_UNCOMPRESSED = brickrouge-uncompressed.js
 BRICKROUGE_JS_FILES = \
 	lib/core.js \
 	lib/utils.js \
-	lib/observe.js \
+	lib/subject.js \
 	lib/widget.js
 
 #JS_COMPRESSOR = curl -X POST -s --data-urlencode 'input@$^' http://javascript-minifier.com/raw

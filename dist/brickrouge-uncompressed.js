@@ -1,12 +1,26 @@
+/*!
+ * Brickrouge dev-master (http://brickrouge.org)
+ * Copyright 2016 Olivier Laviale <olivier.laviale@gmail.com>.
+ * Licensed under the New BSD License
+ */
+
 var Brickrouge = {}
 
 !function (Brickrouge)
 {
 	"use strict";
 
-	Brickrouge.run = function()
-	{
-		Brickrouge.Widget.parse()
+	Brickrouge.run = function() {
+
+		try
+		{
+			Brickrouge.Widget.parse(document.body)
+		}
+		catch (e)
+		{
+			console.error(e)
+		}
+
 		Brickrouge.Widget.monitor()
 	}
 
@@ -15,10 +29,12 @@ var Brickrouge = {}
 
 	"use strict";
 
+	const UNIQUE_NUMBER_PROPERTY = 'uniqueNumber'
+
 	var uniqueNumberIndex = 0
 
 	/**
-	 * Returns the unique identifier a node.
+	 * Return the unique identifier a node.
 	 *
 	 * @param {Node} node
 	 *
@@ -26,7 +42,7 @@ var Brickrouge = {}
 	 */
 	Brickrouge.uidOf = function(node) {
 
-		return node.uniqueNumber || (node.uniqueNumber = ++uniqueNumberIndex)
+		return node[UNIQUE_NUMBER_PROPERTY] || (node[UNIQUE_NUMBER_PROPERTY] = ++uniqueNumberIndex)
 
 	}
 
@@ -48,7 +64,7 @@ var Brickrouge = {}
 	Brickrouge.Dataset = {
 
 		/**
-		 * Returns the dataset values.
+		 * Return the dataset values.
 		 *
 		 * @param {Element} element
 		 *
@@ -62,7 +78,8 @@ var Brickrouge = {}
 			, y = attributes.length
 			, attr
 
-			for (; i < y; i++) {
+			for (; i < y; i++)
+			{
 				attr = attributes[i]
 
 				if (!attr.name.match(/^data-/)) continue;
@@ -81,7 +98,7 @@ var Brickrouge = {}
 
 	"use strict";
 
-	var /** @const **/ OBSERVER_PROPERTY = '$brickrouge:observers'
+	const OBSERVER_PROPERTY = '$brickrouge:observers'
 
 	/**
 	 * @interface
@@ -91,7 +108,7 @@ var Brickrouge = {}
 	Subject.prototype = {
 
 		/**
-		 * Returns the observers array.
+		 * Return the observers array.
 		 *
 		 * @protected
 		 *
@@ -124,7 +141,7 @@ var Brickrouge = {}
 		},
 
 		/**
-		 * Attaches an observer.
+		 * Attach an observer.
 		 *
 		 * @param {string} type Event type.
 		 * @param {function} callback
@@ -135,20 +152,20 @@ var Brickrouge = {}
 
 			if (observers.indexOf(callback) !== -1)
 			{
-				throw new Error("Observer already attached for type \"" + type + '"')
+				throw new Error("Observer already attached for type `" + type + '`')
 			}
 
 			observers.push(callback)
 		},
 
 		/**
-		 * Detaches an observer.
+		 * Detach an observer.
 		 *
 		 * @param {function} callback
 		 */
 		detachObserver: function(callback) {
 
-			var observers = this.getObservers(), type, typeObservers, k
+			var observers = this.getObservers(null), type, typeObservers, k
 
 			for (type in Object.keys(observers))
 			{
@@ -162,7 +179,7 @@ var Brickrouge = {}
 		},
 
 		/**
-		 * Notifies observers of a change.
+		 * Notify observers of a change.
 		 *
 		 * @param {string} type
 		 * @param {Array} payload
@@ -205,15 +222,16 @@ var Brickrouge = {}
 
 	"use strict";
 
-	var /** @const **/ IS_ATTRIBUTE = 'brickrouge-is'
-	, /** @const **/ OPTIONS_ATTRIBUTE = 'brickrouge-options'
-	, /** @const **/ WIDGET_SELECTOR = '[' + IS_ATTRIBUTE + ']'
-	, factories = []
-	, widgets = []
-	, observer = null
+	const IS_ATTRIBUTE = 'brickrouge-is'
+	const OPTIONS_ATTRIBUTE = 'brickrouge-options'
+	const WIDGET_SELECTOR = '[' + IS_ATTRIBUTE + ']'
+
+	var factories = []
+	var widgets = []
+	var observer = null
 
 	/**
-	 * Returns the factory of a widget type.
+	 * Return the factory of a widget type.
 	 *
 	 * @param {string} type Widget type.
 	 *
@@ -225,7 +243,7 @@ var Brickrouge = {}
 	{
 		if (!(type in factories))
 		{
-			throw new Error("There is no widget factory for type " + type)
+			throw new Error("There is no widget factory for type `" + type + "`")
 		}
 
 		return factories[type]
@@ -244,7 +262,7 @@ var Brickrouge = {}
 	}
 
 	/**
-	 * Resolves the options for the widget.
+	 * Resolve the options for the widget.
 	 *
 	 * @param {Element} element The element used to create the widget
 	 *
@@ -261,7 +279,7 @@ var Brickrouge = {}
 	}
 
 	/**
-	 * Builds the widget associated with an element.
+	 * Build the widget associated with an element.
 	 *
 	 * The `brickrouge.widget` event is fired on the `window` object when a widget is constructed.
 	 * The event is fired with the widget and its element as arguments. If an error occurs while
@@ -281,14 +299,14 @@ var Brickrouge = {}
 
 		if (!type)
 		{
-			throw new Error("The " + IS_ATTRIBUTE + " attribute is not defined or empty.")
+			throw new Error("The `" + IS_ATTRIBUTE + "` attribute is not defined or empty.")
 		}
 
 		widget = factory(type)(element, resolveOptions(element))
 
 		if (!widget)
 		{
-			throw new Error("The widget factory " + type + " failed to instantiate widget.")
+			throw new Error("The widget factory `" + type + "` failed to instantiate widget.")
 		}
 
 		try
@@ -304,7 +322,7 @@ var Brickrouge = {}
 	}
 
 	/**
-	 * Returns the widget associated with an element.
+	 * Return the widget associated with an element.
 	 *
 	 * @param {Element} element
 	 *
@@ -323,7 +341,7 @@ var Brickrouge = {}
 	}
 
 	/**
-	 * Parses a DOM fragment for widgets to build.
+	 * Parse a DOM fragment for widgets to build.
 	 *
 	 * @param {Element} fragment
 	 *
@@ -354,7 +372,7 @@ var Brickrouge = {}
 	}
 
 	/**
-	 * Monitors DOM mutations to instantiate new widgets.
+	 * Monitor DOM mutations to instantiate new widgets.
 	 */
 	function monitor()
 	{
@@ -395,6 +413,7 @@ var Brickrouge = {}
 
 	Brickrouge.isWidget = isWidget
 	Brickrouge.register = register
+	Brickrouge.registered = factory
 	Brickrouge.parse = parse
 	Brickrouge.from = from
 
@@ -407,6 +426,7 @@ var Brickrouge = {}
 		from: from,
 		parse: parse,
 		register: register,
+		registered: factory,
 		monitor: monitor
 
 	}

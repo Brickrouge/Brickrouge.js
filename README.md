@@ -1,10 +1,14 @@
 # Brickrouge.js
 
-**Brickrouge.js** creates encapsulated and interoperable custom elements—or widgets—from HTML elements. Because the HTML is already there, widgets come to life seamlessly for your user, without bump or refresh.
+**Brickrouge.js** creates encapsulated and interoperable custom elements—or widgets—from HTML elements. Because the HTML is already there, widgets come to life seamlessly for the user, without bump or refresh.
 
 The special attribute `brickrouge-is` is used to recognize Brickrouge widgets from classic HTML elements, it defines the name of the widget factory.
 
 **Brickrouge.js** is framework agnostic.
+
+
+
+
 
 ## Usage
 
@@ -25,19 +29,23 @@ The following example demonstrates how to create a widget that creates a clone o
 		.addEventListener('click', function() {
 			var copy = element.cloneNode(true)
 			, parent = element.parentNode
-			
+
 			parent.insertBefore(copy, element)
 			parent.insertBefore(element, copy)
 		}, false)
 	}
 
 	// Registering factory for 'copy' widgets
-	Brickrouge.register("copy", function(element, options) {
+	Brickrouge.register('copy', function(element, options) {
 		return new Copy(element, options)
 	})
 
 } (Brickrouge)
 ```
+
+
+
+
 
 ## Running Brickrouge
 
@@ -60,6 +68,8 @@ Brickrouge.parse(document.getElementById('my-container'))
 
 
 
+
+
 ## Helpers
 
 - `Brickrouge.isWidget()`: whether the element is a widget.
@@ -69,6 +79,16 @@ Brickrouge.parse(document.getElementById('my-container'))
 - `Brickrouge.Dataset.from()`: returns the dataset values associated with and element.
 
 - `Brickrouge.from()` or `Brickrouge.Widget.from()`: returns the widget associated with an element and creates it if needed.
+
+
+
+
+
+----------
+
+## License
+
+**brickrouge.js** is licensed under the New BSD License - See the [LICENSE](LICENSE) file for details.
 
 
 

@@ -228,6 +228,7 @@ var Brickrouge = {}
 
 	var factories = []
 	var widgets = []
+	var parsed = []
 	var observer = null
 
 	/**
@@ -354,6 +355,12 @@ var Brickrouge = {}
 
 		fragment = fragment || document.body
 
+		if (parsed.indexOf(fragment) !== -1) {
+			return []
+		}
+
+		parsed.push(fragment)
+
 		if (isWidget(fragment))
 		{
 			widgets.push(from(fragment))
@@ -365,6 +372,8 @@ var Brickrouge = {}
 		{
 			widgets.push(from(elements[i]))
 		}
+
+		parsed.splice(parsed.indexOf(fragment), 1)
 
 		Brickrouge.notifyObservers('parse', [ fragment, widgets ])
 

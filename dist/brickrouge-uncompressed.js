@@ -223,13 +223,14 @@ var Brickrouge = {}
 	"use strict";
 
 	const IS_ATTRIBUTE = 'brickrouge-is'
+	const BUILT_ATTRIBUTE = 'brickrouge-built'
 	const OPTIONS_ATTRIBUTE = 'brickrouge-options'
 	const WIDGET_SELECTOR = '[' + IS_ATTRIBUTE + ']'
 
 	var factories = []
 	var widgets = []
 	var parsed = []
-	var observer = null
+	var monitoring = null
 
 	/**
 	 * Return the factory of a widget type.
@@ -260,6 +261,18 @@ var Brickrouge = {}
 	function isWidget(node)
 	{
 		return typeof node == 'object' && 'getAttribute' in node && !!node.getAttribute(IS_ATTRIBUTE)
+	}
+
+	/**
+	 * Whether a widget is built for the element.
+	 *
+	 * @param {Element} node
+	 *
+	 * @returns {boolean}
+	 */
+	function isBuilt(node)
+	{
+		return node.hasAttribute(BUILT_ATTRIBUTE)
 	}
 
 	/**
@@ -310,6 +323,8 @@ var Brickrouge = {}
 			throw new Error("The widget factory `" + type + "` failed to instantiate widget.")
 		}
 
+		element.setAttribute(BUILT_ATTRIBUTE, "")
+
 		try
 		{
 			Brickrouge.notifyObservers('widget', [ widget ])
@@ -345,9 +360,6 @@ var Brickrouge = {}
 	 * Parse a DOM fragment for widgets to build.
 	 *
 	 * @param {Element} fragment
-	 *
-	 * @return {Array} An array of the widgets built in this fragment, which might also include
-	 * previously built widgets.
 	 */
 	function parse(fragment)
 	{
@@ -356,28 +368,34 @@ var Brickrouge = {}
 		fragment = fragment || document.body
 
 		if (parsed.indexOf(fragment) !== -1) {
-			return []
+			return
 		}
 
 		parsed.push(fragment)
 
-		if (isWidget(fragment))
+		if (isWidget(fragment) && !isBuilt(fragment))
 		{
-			widgets.push(from(fragment))
+			try {
+				widgets.push(from(fragment))
+			} catch (e) {
+				console.log(e)
+			}
 		}
 
-		elements = fragment.querySelectorAll('[' + IS_ATTRIBUTE + ']')
+		elements = fragment.querySelectorAll('[' + IS_ATTRIBUTE + ']:not([' + BUILT_ATTRIBUTE + '])')
 
 		for (j = elements.length ; i < j ; i++)
 		{
-			widgets.push(from(elements[i]))
+			try {
+				widgets.push(from(elements[i]))
+			} catch (e) {
+				console.log(e)
+			}
 		}
 
 		parsed.splice(parsed.indexOf(fragment), 1)
 
 		Brickrouge.notifyObservers('parse', [ fragment, widgets ])
-
-		return widgets
 	}
 
 	/**
@@ -385,9 +403,16 @@ var Brickrouge = {}
 	 */
 	function monitor()
 	{
-		if (observer) return
+		var constructor = MutationObserver || WebkitMutationObserver
 
-		observer = new MutationObserver(function(mutations) {
+		if (monitoring) return
+
+		constructor ? monitorByObserver(constructor) : monitorByPolling()
+	}
+
+	function monitorByObserver(constructor)
+	{
+		var observer = new constructor(function(mutations) {
 
 			mutations.forEach(function(mutation) {
 
@@ -409,6 +434,15 @@ var Brickrouge = {}
 		observer.observe(document.body, { childList: true })
 	}
 
+	function monitorByPolling()
+	{
+		setInterval(function () {
+
+			parse(document.body)
+
+		}, 1000)
+	}
+
 	/**
 	 * Registers a widget factory.
 	 *
@@ -421,6 +455,7 @@ var Brickrouge = {}
 	}
 
 	Brickrouge.isWidget = isWidget
+	Brickrouge.isBuilt = isBuilt
 	Brickrouge.register = register
 	Brickrouge.registered = factory
 	Brickrouge.parse = parse

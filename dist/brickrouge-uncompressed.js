@@ -266,13 +266,15 @@ var Brickrouge = {}
 	/**
 	 * Whether a widget is built for the element.
 	 *
-	 * @param {Element} node
+	 * @param {Element} element
 	 *
 	 * @returns {boolean}
 	 */
-	function isBuilt(node)
+	function isBuilt(element)
 	{
-		return node.hasAttribute(BUILT_ATTRIBUTE)
+		var uniqueNumber = Brickrouge.uidOf(element)
+
+		return uniqueNumber in widgets
 	}
 
 	/**
@@ -395,7 +397,7 @@ var Brickrouge = {}
 
 		parsed.splice(parsed.indexOf(fragment), 1)
 
-		Brickrouge.notifyObservers('parse', [ fragment, widgets ])
+		Brickrouge.notifyObservers('widgets', [ widgets, fragment ])
 	}
 
 	/**

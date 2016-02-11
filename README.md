@@ -1,8 +1,11 @@
 # Brickrouge.js
 
-**Brickrouge.js** creates encapsulated and interoperable custom elements—or widgets—from HTML elements. Because the HTML is already there, widgets come to life seamlessly for the user, without bump or refresh.
+**Brickrouge.js** creates encapsulated and interoperable custom elements—or widgets—from HTML
+*elements. Because the HTML is already there, widgets come to life seamlessly for the user, without
+*bump or refresh.
 
-The special attribute `brickrouge-is` is used to recognize Brickrouge widgets from classic HTML elements, it defines the name of the widget factory.
+The special attribute `brickrouge-is` is used to recognize Brickrouge widgets from classic HTML
+elements, it defines the name of the widget factory.
 
 **Brickrouge.js** is framework agnostic.
 
@@ -12,7 +15,8 @@ The special attribute `brickrouge-is` is used to recognize Brickrouge widgets fr
 
 ## Usage
 
-The following example demonstrates how to create a widget that creates a clone of itself when its button is pressed.
+The following example demonstrates how to create a widget that creates a clone of itself when its
+button is pressed.
 
 ```html
 <div brickrouge-is="copy"><button>copy</button></div>
@@ -49,13 +53,17 @@ The following example demonstrates how to create a widget that creates a clone o
 
 ## Running Brickrouge
 
-`Brickrouge.run()` is used to run Brickrouge. The method instantiates the widgets found in `document.body`, then waits for DOM mutations to instantiate new widgets. The best place to invoke the method is a _DOM ready_ callback:
+`Brickrouge.run()` is used to run Brickrouge. The method instantiates the widgets found in
+`document.body`, then waits for DOM mutations to instantiate new widgets. The best place to invoke
+the method is a _DOM ready_ callback:
 
 ```js
 document.addEventListener('DOMContentLoaded', Brickrouge.run)
 ```
 
-If the browser doesn't provide the [MutationObserver][] interface, or if you want to parse a container yourself you can use the `parse()` method:
+Brickrouge uses the [MutationObserver][] interface—or DOM polling if it's not available—to
+automatically instantiate new widgets, so you don't have to care about that, still if you care you
+may call the `parse()` method yourself:
 
 ```js
 Brickrouge.parse()
@@ -70,15 +78,55 @@ Brickrouge.parse(document.getElementById('my-container'))
 
 
 
+## Events
+
+### A widget has been built
+
+The `widget` event is fired after a widget has been built.
+
+```js
+Brickrouge.attachObserver('widget', function(widget) {
+
+    console.log('A widget has been built:', widget)
+
+})
+```
+
+
+
+
+
+### Multiple widgets have been built
+
+The `widgets` event is fired after multiple widgets have been built, after parsing a document
+fragment.
+
+```js
+Brickrouge.attachObserver('widgets', function(widgets, fragment) {
+
+    console.log('Widgets have been built:', widgets)
+
+})
+```
+
+
+
+
+
 ## Helpers
 
 - `Brickrouge.isWidget()`: whether the element is a widget.
 
-- `Brickrouge.uidOf()`: returns the unique identifier associated with an element. If the `uniqueNumber` property is available it will return it, otherwise it creates a unique identifier of its own.
+- `Brickrouge.isBuilt()`: whether the widget for this element is built.
+
+- `Brickrouge.uidOf()`: returns the unique identifier associated with an element. If the
+`uniqueNumber` property is available it will return it, otherwise it creates a unique identifier of
+its own.
 
 - `Brickrouge.Dataset.from()`: returns the dataset values associated with and element.
 
-- `Brickrouge.from()` or `Brickrouge.Widget.from()`: returns the widget associated with an element and creates it if needed.
+- `Brickrouge.from()` or `Brickrouge.Widget.from()`: returns the widget associated with an element
+and creates it if needed.
 
 
 

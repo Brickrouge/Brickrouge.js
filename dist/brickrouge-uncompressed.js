@@ -203,6 +203,7 @@ var Brickrouge = {}
 	"use strict";
 
 	const IS_ATTRIBUTE = 'brickrouge-is'
+	const INVALID_IS_ATTRIBUTE = 'brickrouge-invalid-is'
 	const BUILT_ATTRIBUTE = 'brickrouge-built'
 	const OPTIONS_ATTRIBUTE = 'brickrouge-options'
 	const WIDGET_SELECTOR = '[' + IS_ATTRIBUTE + ']'
@@ -258,6 +259,19 @@ var Brickrouge = {}
 	}
 
 	/**
+	 * Invalidates a custom element.
+	 *
+	 * @param {Element} element
+	 */
+	function invalidate(element)
+	{
+		console.info("invalidate:", element)
+		element.setAttribute(INVALID_IS_ATTRIBUTE, element.getAttribute(IS_ATTRIBUTE))
+
+		element.removeAttribute(IS_ATTRIBUTE)
+	}
+
+	/**
 	 * Resolve the options for the widget.
 	 *
 	 * @param {Element} element The element used to create the widget
@@ -286,23 +300,31 @@ var Brickrouge = {}
 	 * @return {Object}
 	 *
 	 * @throw Error in attempt to build a widget from an element without {@link IS_ATTRIBUTE}, or
-	 * when the factory fails to instantiate the widget.
+	 * when the factory fails to build the widget.
 	 */
 	function build(element)
 	{
 		var type = element.getAttribute(IS_ATTRIBUTE)
-		, widget
+		, widget = null
 
 		if (!type)
 		{
+			invalidate(element)
+
 			throw new Error("The `" + IS_ATTRIBUTE + "` attribute is not defined or empty.")
 		}
 
-		widget = factory(type)(element, resolveOptions(element))
+		try {
+			widget = factory(type)(element, resolveOptions(element))
+		} catch (e) {
+			console.error(e)
+		}
 
 		if (!widget)
 		{
-			throw new Error("The widget factory `" + type + "` failed to instantiate widget.")
+			invalidate(element)
+
+			throw new Error("The widget factory `" + type + "` failed to build the widget.")
 		}
 
 		element.setAttribute(BUILT_ATTRIBUTE, "")
@@ -360,7 +382,7 @@ var Brickrouge = {}
 			try {
 				widgets.push(from(fragment))
 			} catch (e) {
-				console.log(e)
+				console.error(e)
 			}
 		}
 
@@ -371,7 +393,7 @@ var Brickrouge = {}
 			try {
 				widgets.push(from(elements[i]))
 			} catch (e) {
-				console.log(e)
+				console.error(e)
 			}
 		}
 
@@ -381,7 +403,7 @@ var Brickrouge = {}
 	}
 
 	/**
-	 * Monitor DOM mutations to instantiate new widgets.
+	 * Monitor DOM mutations to build new widgets.
 	 */
 	function monitor()
 	{

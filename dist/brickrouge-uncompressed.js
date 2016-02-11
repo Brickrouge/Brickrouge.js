@@ -146,7 +146,7 @@ var Brickrouge = {}
 		 * @param {string} type Event type.
 		 * @param {function} callback
 		 */
-		attachObserver: function(type, callback) {
+		observe: function(type, callback) {
 
 			var observers = this.getObservers(type)
 
@@ -163,7 +163,7 @@ var Brickrouge = {}
 		 *
 		 * @param {function} callback
 		 */
-		detachObserver: function(callback) {
+		unobserve: function(callback) {
 
 			var observers = this.getObservers(null), type, typeObservers, k
 
@@ -184,7 +184,7 @@ var Brickrouge = {}
 		 * @param {string} type
 		 * @param {Array} payload
 		 */
-		notifyObservers: function(type, payload) {
+		notify: function(type, payload) {
 
 			var observers = this.getObservers(type), i, y
 
@@ -212,9 +212,9 @@ var Brickrouge = {}
 	 */
 	Brickrouge.Subject = Subject
 
-	Brickrouge.attachObserver = Subject.prototype.attachObserver
-	Brickrouge.detachObserver = Subject.prototype.detachObserver
-	Brickrouge.notifyObservers = Subject.prototype.notifyObservers
+	Brickrouge.observe = Subject.prototype.observe
+	Brickrouge.unobserve = Subject.prototype.unobserve
+	Brickrouge.notify = Subject.prototype.notify
 	Brickrouge.getObservers = Subject.prototype.getObservers
 
 } (Brickrouge);
@@ -329,7 +329,7 @@ var Brickrouge = {}
 
 		try
 		{
-			Brickrouge.notifyObservers('widget', [ widget ])
+			Brickrouge.notify('widget', [ widget ])
 		}
 		catch (e)
 		{
@@ -397,7 +397,7 @@ var Brickrouge = {}
 
 		parsed.splice(parsed.indexOf(fragment), 1)
 
-		Brickrouge.notifyObservers('widgets', [ widgets, fragment ])
+		Brickrouge.notify('widgets', [ widgets, fragment ])
 	}
 
 	/**

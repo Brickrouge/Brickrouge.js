@@ -85,7 +85,7 @@ Brickrouge.parse(document.getElementById('my-container'))
 The `widget` event is fired after a widget has been built.
 
 ```js
-Brickrouge.attachObserver('widget', function(widget) {
+Brickrouge.observe('widget', function(widget) {
 
     console.log('A widget has been built:', widget)
 
@@ -96,13 +96,13 @@ Brickrouge.attachObserver('widget', function(widget) {
 
 
 
-### Multiple widgets have been built
+### Widgets have been built
 
 The `widgets` event is fired after multiple widgets have been built, after parsing a document
 fragment.
 
 ```js
-Brickrouge.attachObserver('widgets', function(widgets, fragment) {
+Brickrouge.observe('widgets', function(widgets, fragment) {
 
     console.log('Widgets have been built:', widgets)
 

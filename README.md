@@ -51,28 +51,19 @@ button is pressed.
 
 
 
-## Running Brickrouge
+## Running Brickrouge.js
 
-`Brickrouge.run()` is used to run Brickrouge. The method instantiates the widgets found in
-`document.body`, then waits for DOM mutations to instantiate new widgets. The best place to invoke
-the method is a _DOM ready_ callback:
+`Brickrouge.run()` is used to run **Brickrouge.js**. The DOM is observed for mutations and widgets
+found in `document.body` are built.
+
+The best practice to use this method is as a _DOM ready_ callback:
 
 ```js
 document.addEventListener('DOMContentLoaded', Brickrouge.run)
 ```
 
-Brickrouge uses the [MutationObserver][] interface—or DOM polling if it's not available—to
-automatically instantiate new widgets, so you don't have to care about that, still if you care you
-may call the `parse()` method yourself:
-
-```js
-Brickrouge.parse()
-// or
-Brickrouge.parse(document.body)
-
-// parse a specific container
-Brickrouge.parse(document.getElementById('my-container'))
-```
+> The [MutationObserver][] interface—or DOM polling if it's not available—is used to
+automatically build new widgets.
 
 
 
@@ -96,18 +87,21 @@ Brickrouge.observe('widget', function(widget) {
 
 
 
-### Widgets have been built
+### The DOM was updated
 
-The `widgets` event is fired after multiple widgets have been built, after parsing a document
-fragment.
+The `update` event is fired after the DOM was updated.
 
 ```js
-Brickrouge.observe('widgets', function(widgets, fragment) {
+Brickrouge.observe('update', function(fragment, elements, widgets) {
 
-    console.log('Widgets have been built:', widgets)
+    console.log('This fragment updated the DOM:', fragment)
+    console.log('These elements are new widgets:', elements)
+    console.log('These widgets have been build:', widgets)
 
 })
 ```
+
+> **Note:** The event is fired a first time after **Brickrouge.js** is ran.
 
 
 
@@ -125,7 +119,7 @@ its own.
 
 - `Brickrouge.Dataset.from()`: returns the dataset values associated with and element.
 
-- `Brickrouge.from()` or `Brickrouge.Widget.from()`: returns the widget associated with an element
+- `Brickrouge.Widget.from()` or `Brickrouge.from()`: returns the widget associated with an element
 and creates it if needed.
 
 

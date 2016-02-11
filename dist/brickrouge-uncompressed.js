@@ -5,26 +5,6 @@
  */
 
 var Brickrouge = {}
-
-!function (Brickrouge)
-{
-	"use strict";
-
-	Brickrouge.run = function() {
-
-		try
-		{
-			Brickrouge.Widget.parse(document.body)
-		}
-		catch (e)
-		{
-			console.error(e)
-		}
-
-		Brickrouge.Widget.monitor()
-	}
-
-} (Brickrouge);
 !function(Brickrouge) {
 
 	"use strict";
@@ -397,7 +377,7 @@ var Brickrouge = {}
 
 		parsed.splice(parsed.indexOf(fragment), 1)
 
-		Brickrouge.notify('widgets', [ widgets, fragment ])
+		Brickrouge.notify('update', [ fragment, elements, widgets ])
 	}
 
 	/**
@@ -407,42 +387,48 @@ var Brickrouge = {}
 	{
 		var constructor = MutationObserver || WebkitMutationObserver
 
+		function monitorByObserver(constructor)
+		{
+			new constructor(function(mutations) {
+
+				mutations.forEach(function(mutation) {
+
+					var i, j, node, nodes = mutation.addedNodes
+
+					for (i = 0, j = nodes.length ; i < j ; i++)
+					{
+						node = nodes[i]
+
+						if (!isWidget(node)) continue
+
+						from(node)
+					}
+
+				})
+
+			}).observe(document.body, { childList: true })
+		}
+
+		function monitorByPolling()
+		{
+			var previousState = document.body.innerHTML
+
+			setInterval(function () {
+
+				if (previousState == document.body.innerHTML) {
+					return
+				}
+
+				previousState = document.body.innerHTML
+
+				parse(document.body)
+
+			}, 1000)
+		}
+
 		if (monitoring) return
 
 		constructor ? monitorByObserver(constructor) : monitorByPolling()
-	}
-
-	function monitorByObserver(constructor)
-	{
-		var observer = new constructor(function(mutations) {
-
-			mutations.forEach(function(mutation) {
-
-				var i, j, node, nodes = mutation.addedNodes
-
-				for (i = 0, j = nodes.length ; i < j ; i++)
-				{
-					node = nodes[i]
-
-					if (!isWidget(node)) continue
-
-					from(node)
-				}
-
-			})
-
-		})
-
-		observer.observe(document.body, { childList: true })
-	}
-
-	function monitorByPolling()
-	{
-		setInterval(function () {
-
-			parse(document.body)
-
-		}, 1000)
 	}
 
 	/**
@@ -460,8 +446,13 @@ var Brickrouge = {}
 	Brickrouge.isBuilt = isBuilt
 	Brickrouge.register = register
 	Brickrouge.registered = factory
-	Brickrouge.parse = parse
 	Brickrouge.from = from
+	Brickrouge.run = function () {
+
+		monitor()
+		parse(document.body)
+
+	}
 
 	Brickrouge.Widget = {
 
@@ -470,10 +461,8 @@ var Brickrouge = {}
 		SELECTOR: WIDGET_SELECTOR,
 
 		from: from,
-		parse: parse,
 		register: register,
-		registered: factory,
-		monitor: monitor
+		registered: factory
 
 	}
 

@@ -107,6 +107,23 @@ Brickrouge.observe('update', function(fragment, elements, widgets) {
 
 
 
+### Brickrouge.js is running
+
+The `running` event is fired after **Brickrouge.js** is ran.
+
+```js
+Brickrouge.observe('running', function() {
+
+	console.log('Brickrouge.js is running, we can do stuff')
+
+})
+```
+
+
+
+
+
+
 ## Helpers
 
 - `Brickrouge.isWidget()`: whether the element is a widget.

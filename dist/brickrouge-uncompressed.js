@@ -474,6 +474,8 @@ var Brickrouge = {}
 		monitor()
 		parse(document.body)
 
+		Brickrouge.notify('running')
+
 	}
 
 	Brickrouge.Widget = {

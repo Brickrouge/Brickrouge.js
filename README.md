@@ -1,8 +1,8 @@
 # Brickrouge.js
 
 **Brickrouge.js** creates encapsulated and interoperable custom elements—or widgets—from HTML
-*elements. Because the HTML is already there, widgets come to life seamlessly for the user, without
-*bump or refresh.
+elements. Because the HTML is already there, widgets come to life seamlessly for the user, without
+bump or refresh.
 
 The special attribute `brickrouge-is` is used to recognize Brickrouge widgets from classic HTML
 elements, it defines the name of the widget factory.

@@ -126,17 +126,19 @@ Brickrouge.observe('running', function() {
 
 ## Helpers
 
-- `Brickrouge.isWidget()`: whether the element is a widget.
+- `Brickrouge.isWidget()`: Whether the element is a widget.
 
-- `Brickrouge.isBuilt()`: whether the widget for this element is built.
+- `Brickrouge.isBuilt()`: Whether the widget for this element is built.
 
-- `Brickrouge.uidOf()`: returns the unique identifier associated with an element. If the
+- `Brickrouge.uidOf()`: Returns the unique identifier associated with an element. If the
 `uniqueNumber` property is available it will return it, otherwise it creates a unique identifier of
 its own.
 
-- `Brickrouge.Dataset.from()`: returns the dataset values associated with and element.
+- `Brickrouge.clone()`: Clone a custom element, taking care of removing sensitive attributes.
 
-- `Brickrouge.Widget.from()` or `Brickrouge.from()`: returns the widget associated with an element
+- `Brickrouge.Dataset.from()`: Returns the dataset values associated with an element.
+
+- `Brickrouge.Widget.from()` or `Brickrouge.from()`: Returns the widget associated with an element
 and creates it if needed.
 
 

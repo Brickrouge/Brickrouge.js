@@ -41,6 +41,27 @@ var Brickrouge = {}
 
 	}
 
+	/**
+	 * Clone a custom element, taking care of removing sensitive attributes.
+	 *
+	 * @param {Element} element
+	 *
+	 * @returns {Element}
+	 */
+	Brickrouge.clone = function(element) {
+
+		const BUILT_ATTRIBUTE = Brickrouge.Widget.BUILT_ATTRIBUTE
+
+		var clone = element.cloneNode(true)
+
+		clone.removeAttribute(BUILT_ATTRIBUTE)
+		Array.prototype.forEach.call(clone.querySelectorAll('[' + BUILT_ATTRIBUTE + ']'), function(element) {
+			element.removeAttribute(BUILT_ATTRIBUTE)
+		})
+
+		return clone
+	}
+
 	Brickrouge.Dataset = {
 
 		/**
@@ -211,7 +232,6 @@ var Brickrouge = {}
 	var factories = []
 	var widgets = []
 	var parsed = []
-	var monitoring = null
 
 	/**
 	 * Return the factory of a widget type.
@@ -265,7 +285,6 @@ var Brickrouge = {}
 	 */
 	function invalidate(element)
 	{
-		console.info("invalidate:", element)
 		element.setAttribute(INVALID_IS_ATTRIBUTE, element.getAttribute(IS_ATTRIBUTE))
 
 		element.removeAttribute(IS_ATTRIBUTE)
@@ -407,28 +426,33 @@ var Brickrouge = {}
 	 */
 	function monitor()
 	{
-		var constructor = MutationObserver || WebkitMutationObserver
+		var observer = MutationObserver || WebkitMutationObserver
 
-		function monitorByObserver(constructor)
+		function monitorByObserver(observer)
 		{
-			new constructor(function(mutations) {
+			new observer(function(mutations) {
+
+				var elements = []
 
 				mutations.forEach(function(mutation) {
 
-					var i, j, node, nodes = mutation.addedNodes
+					Array.prototype.forEach.call(mutation.addedNodes, function(node) {
 
-					for (i = 0, j = nodes.length ; i < j ; i++)
-					{
-						node = nodes[i]
+						if (!(node instanceof Element) || elements.indexOf(node) !== -1) {
+							return
+						}
 
-						if (!isWidget(node)) continue
+						elements.push(node)
 
-						from(node)
-					}
+					})
 
 				})
 
-			}).observe(document.body, { childList: true })
+				if (!elements.length) return
+
+				elements.forEach(parse)
+
+			}).observe(document.body, { childList: true, subtree: true })
 		}
 
 		function monitorByPolling()
@@ -448,9 +472,7 @@ var Brickrouge = {}
 			}, 1000)
 		}
 
-		if (monitoring) return
-
-		constructor ? monitorByObserver(constructor) : monitorByPolling()
+		observer ? monitorByObserver(observer) : monitorByPolling()
 	}
 
 	/**
@@ -481,6 +503,7 @@ var Brickrouge = {}
 	Brickrouge.Widget = {
 
 		IS_ATTRIBUTE: IS_ATTRIBUTE,
+		BUILT_ATTRIBUTE: BUILT_ATTRIBUTE,
 		OPTIONS_ATTRIBUTE: OPTIONS_ATTRIBUTE,
 		SELECTOR: WIDGET_SELECTOR,
 

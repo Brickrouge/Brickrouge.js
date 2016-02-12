@@ -6,13 +6,13 @@ BRICKROUGE_JS_FILES = \
 	lib/subject.js \
 	lib/widget.js
 
-#JS_COMPRESSOR = cat $^ # uncomment this line to produce uncompressed files
 JS_COMPRESSOR = curl -s \
-      -d compilation_level=SIMPLE_OPTIMIZATIONS \
-      -d output_format=text \
-      -d output_info=compiled_code \
-     --data-urlencode "js_code@$^" \
-     http://closure-compiler.appspot.com/compile
+	-d compilation_level=SIMPLE_OPTIMIZATIONS \
+	-d output_format=text \
+	-d output_info=compiled_code \
+	--data-urlencode "js_code@$^" \
+	http://closure-compiler.appspot.com/compile
+#JS_COMPRESSOR = cat $^ # uncomment this line to produce uncompressed files
 
 all: \
 	$(BRICKROUGE_JS_UNCOMPRESSED) \
@@ -22,8 +22,11 @@ clean:
 	rm $(BRICKROUGE_JS_COMPRESSED)
 	rm $(BRICKROUGE_JS_UNCOMPRESSED)
 
+watch:
+	webpack --progress --colors --watch
+
 $(BRICKROUGE_JS_UNCOMPRESSED): $(BRICKROUGE_JS_FILES)
-	cat $^ > $@
+	webpack
 
 $(BRICKROUGE_JS_COMPRESSED): $(BRICKROUGE_JS_UNCOMPRESSED)
 	$(JS_COMPRESSOR) > $@

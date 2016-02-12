@@ -15,7 +15,7 @@ elements, it defines the name of the widget factory.
 
 ## Usage
 
-The following example demonstrates how to create a widget that creates a clone of itself when its
+The following example demonstrates how to create a widget that creates a copy of itself when its
 button is pressed.
 
 ```html
@@ -146,6 +146,24 @@ and creates it if needed.
 
 
 ----------
+
+
+
+
+
+## Build
+
+To build **Brickrouge.js** you first need to [install webpack](http://webpack.github.io/docs/installation.html), then just use the command `make`. The files `dist/brickrouge.js` and `dist/brickrouge-uncompressed.js` should be built.
+
+```bash
+$ git clone git@github.com:Brickrouge/Brickrouge.js.git
+$ cd Brickrouge.js
+$ make
+```
+
+
+
+
 
 ## License
 

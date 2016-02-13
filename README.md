@@ -51,9 +51,9 @@ button is pressed.
 
 
 
-## Running Brickrouge.js
+## Running Brickrouge
 
-`Brickrouge.run()` is used to run **Brickrouge.js**. The DOM is observed for mutations and widgets
+`Brickrouge.run()` is used to run **Brickrouge**. The DOM is observed for mutations and widgets
 found in `document.body` are built.
 
 The best practice to use this method is as a _DOM ready_ callback:
@@ -101,20 +101,20 @@ Brickrouge.observe('update', function(fragment, elements, widgets) {
 })
 ```
 
-> **Note:** The event is fired a first time after **Brickrouge.js** is ran.
+> **Note:** The event is fired a first time after **Brickrouge** is ran.
 
 
 
 
 
-### Brickrouge.js is running
+### Brickrouge is running
 
-The `running` event is fired after **Brickrouge.js** is ran.
+The `running` event is fired after **Brickrouge** is ran.
 
 ```js
 Brickrouge.observe('running', function() {
 
-	console.log('Brickrouge.js is running, we can do stuff')
+	console.log('Brickrouge is running, we can do stuff')
 
 })
 ```

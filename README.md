@@ -96,7 +96,7 @@ Brickrouge.observe('update', function(fragment, elements, widgets) {
 
     console.log('This fragment updated the DOM:', fragment)
     console.log('These elements are new widgets:', elements)
-    console.log('These widgets have been build:', widgets)
+    console.log('These widgets have been built:', widgets)
 
 })
 ```

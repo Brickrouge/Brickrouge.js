@@ -52,11 +52,11 @@
 
 	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 
-		__webpack_require__(4),
+		__webpack_require__(1),
 		__webpack_require__(2),
 		__webpack_require__(3),
-		__webpack_require__(5),
-		__webpack_require__(6)
+		__webpack_require__(4),
+		__webpack_require__(5)
 
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge) {
 
@@ -66,13 +66,23 @@
 
 
 /***/ },
-/* 1 */,
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
+
+		return {}
+
+	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+
+
+/***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 
-		__webpack_require__(4)
+		__webpack_require__(1)
 
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge) {
 
@@ -90,6 +100,20 @@
 		Brickrouge.uidOf = function(node) {
 
 			return node[UNIQUE_NUMBER_PROPERTY] || (node[UNIQUE_NUMBER_PROPERTY] = ++uniqueNumberIndex)
+
+		}
+
+		/**
+		 * Efficiently empty an element.
+		 *
+		 * @param {Element} element
+		 */
+		Brickrouge.empty = function(element) {
+
+			while (element.firstChild)
+			{
+				element.removeChild(element.firstChild)
+			}
 
 		}
 
@@ -148,7 +172,7 @@
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 
-		__webpack_require__(4)
+		__webpack_require__(1)
 
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge) {
 
@@ -275,20 +299,9 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
-
-		return {}
-
-	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
-
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 
-		__webpack_require__(4)
+		__webpack_require__(1)
 
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge) {
 
@@ -588,13 +601,13 @@
 
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 
-		__webpack_require__(4),
-		__webpack_require__(5)
+		__webpack_require__(1),
+		__webpack_require__(4)
 
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge, widget) {
 

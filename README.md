@@ -56,7 +56,7 @@ button is pressed.
 `Brickrouge.run()` is used to run **Brickrouge**. The DOM is observed for mutations and widgets
 found in `document.body` are built.
 
-The best practice to use this method is as a _DOM ready_ callback:
+It is advised to use the method as a _DOM ready_ callback:
 
 ```js
 document.addEventListener('DOMContentLoaded', Brickrouge.run)
@@ -133,6 +133,14 @@ Brickrouge.observe('running', function() {
 - `Brickrouge.uidOf()`: Returns the unique identifier associated with an element. If the
 `uniqueNumber` property is available it will return it, otherwise it creates a unique identifier of
 its own.
+
+- `Brickrouge.empty()`: Removes the children of an element.
+
+	```js
+	var element = document.getElementById('my-element')
+	
+	Brickrouge.empty(element)
+	```
 
 - `Brickrouge.clone()`: Clone a custom element, taking care of removing sensitive attributes.
 

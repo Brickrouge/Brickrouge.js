@@ -163,7 +163,7 @@ its own.
 	```js
 	var element = document.getElementById('my-element')
 
-	console.log('uid:, Brickrouge.uidOf(element))
+	console.log('uid:', Brickrouge.uidOf(element))
 	```
 
 - `Brickrouge.empty()`: Removes the children of an element.

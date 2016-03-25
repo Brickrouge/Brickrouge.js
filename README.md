@@ -1,6 +1,6 @@
 # Brickrouge.js
 
-**Brickrouge.js** creates encapsulated and interoperable custom elements—or widgets—from HTML
+**Brickrouge.js** creates interoperable custom elements—or widgets—from HTML
 elements. Because the HTML is already there, widgets come to life seamlessly for the user, without
 bump or refresh.
 

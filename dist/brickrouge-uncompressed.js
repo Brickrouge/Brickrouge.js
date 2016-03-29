@@ -220,6 +220,8 @@
 			 *
 			 * @param {string} type Event type.
 			 * @param {function} callback
+			 *
+			 * @return {this}
 			 */
 			observe: function (type, callback) {
 
@@ -231,12 +233,16 @@
 				}
 
 				observers.push(callback)
+
+				return this
 			},
 
 			/**
 			 * Detach an observer.
 			 *
 			 * @param {function} callback
+			 *
+			 * @return {this}
 			 */
 			unobserve: function (callback) {
 
@@ -251,6 +257,8 @@
 
 					typeObservers.splice(k, 1)
 				}
+
+				return this
 			},
 
 			/**
@@ -258,6 +266,8 @@
 			 *
 			 * @param {string} type
 			 * @param {Array} payload
+			 *
+			 * @return {this}
 			 */
 			notify: function (type, payload) {
 
@@ -265,7 +275,7 @@
 
 				if (!observers.length)
 				{
-					return
+					return this
 				}
 
 				for (i = 0, y = observers.length; i < y; i++)
@@ -279,6 +289,8 @@
 						console.error(e)
 					}
 				}
+
+				return this
 			}
 		}
 

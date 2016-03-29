@@ -1,20 +1,20 @@
 {
-	"name": "brickrouge",
-	"version": "0.1.0",
-	"description": "Creates interoperable custom elements",
-	"author": "Olivier LAVIALE <olivier.laviale@gmail.com> (http://olvlvl.com)",
-	"main": "dist/brickrouge.js",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Brickrouge/Brickrouge.js"
-	},
-	"bugs": {
-		"url": "https://github.com/Brickrouge/Brickrouge.js/issues"
-	},
-	"keywords": [
-		"custom",
-		"element",
-		"html"
-	],
-	"licence": "BSD 3-Clause"
+  "name": "brickrouge",
+  "version": "0.1.1",
+  "description": "Creates interoperable custom elements",
+  "author": "Olivier LAVIALE <olivier.laviale@gmail.com> (http://olvlvl.com)",
+  "main": "dist/brickrouge.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Brickrouge/Brickrouge.js"
+  },
+  "bugs": {
+    "url": "https://github.com/Brickrouge/Brickrouge.js/issues"
+  },
+  "keywords": [
+    "custom",
+    "element",
+    "html"
+  ],
+  "licence": "BSD 3-Clause"
 }

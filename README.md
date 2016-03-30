@@ -56,7 +56,7 @@ button is pressed.
 `Brickrouge.run()` is used to run **Brickrouge**. The DOM is observed for mutations and widgets
 found in `document.body` are built.
 
-It is advised to use the method as a _DOM ready_ callback:
+The best way to invoke the method is as a _DOM ready_ callback:
 
 ```js
 document.addEventListener('DOMContentLoaded', Brickrouge.run)
@@ -73,12 +73,16 @@ automatically build new widgets.
 
 ### A widget has been built
 
-The `widget` event is fired after a widget has been built.
+The _widget_ event is fired after a widget has been built.
 
 ```js
-Brickrouge.observe('widget', function(widget) {
+/**
+ * @param {Brickrouge.EVENT_WIDGET} ev
+ * @listens Brickrouge#widget
+ */
+Brickrouge.observe(Brickrouge.EVENT_WIDGET, function(ev) {
 
-    console.log('A widget has been built:', widget)
+    console.log('A widget has been built:', ev.widget)
 
 })
 ```
@@ -89,14 +93,18 @@ Brickrouge.observe('widget', function(widget) {
 
 ### The DOM was updated
 
-The `update` event is fired after the DOM was updated.
+The _update_ event is fired after the DOM was updated.
 
 ```js
-Brickrouge.observe('update', function(fragment, elements, widgets) {
+/**
+ * @param {Brickrouge.EVENT_UPDATE} ev
+ * @listens Brickrouge#update
+ */
+Brickrouge.observe(Brickrouge.EVENT_UPDATE, function(ev) {
 
-    console.log('This fragment updated the DOM:', fragment)
-    console.log('These elements are new widgets:', elements)
-    console.log('These widgets have been built:', widgets)
+    console.log('This fragment updated the DOM:', ev.fragment)
+    console.log('These elements are new widgets:', ev.elements)
+    console.log('These widgets have been built:', ev.widgets)
 
 })
 ```
@@ -109,10 +117,14 @@ Brickrouge.observe('update', function(fragment, elements, widgets) {
 
 ### Brickrouge is running
 
-The `running` event is fired after **Brickrouge** is ran.
+The _running_ event is fired after **Brickrouge** is ran.
 
 ```js
-Brickrouge.observe('running', function() {
+/**
+ * @param {Brickrouge.EVENT_RUNNING} ev
+ * @listens Brickrouge#running
+ */
+Brickrouge.observe(Brickrouge.EVENT_RUNNING, function(ev) {
 
 	console.log('Brickrouge is running, we can do stuff')
 

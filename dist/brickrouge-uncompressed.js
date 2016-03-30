@@ -58,7 +58,9 @@
 		__webpack_require__(4),
 		__webpack_require__(5)
 
-	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge) {
+	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge, Utils, Subject) {
+
+		Object.assign(Brickrouge, Subject.prototype)
 
 		return window.Brickrouge = Brickrouge
 
@@ -178,10 +180,63 @@
 
 		const OBSERVER_PROPERTY = '$brickrouge:observers'
 
+		function assertNameIsValid(name)
+		{
+			if (typeof name !== 'string')
+			{
+				throw new Error("Event name is not a string")
+			}
+		}
+
+		/**
+		 * Retrieve event name from an event constructor.
+		 *
+		 * @param {function} constructor
+		 *
+		 * @returns {string}
+		 */
+		function retrieveNameFromConstructor(constructor)
+		{
+			if (typeof constructor !== 'function' || !('name' in constructor))
+			{
+				throw new Error("Expecting an event instance, got: `" + constructor + "`")
+			}
+
+			let name = constructor.name
+
+			assertNameIsValid(name)
+
+			return name
+		}
+
+		/**
+		 * Retrieve event name from ab event instance.
+		 *
+		 * @param {object} event
+		 *
+		 * @returns {string}
+		 */
+		function retrieveNameFromInstance(event)
+		{
+			if (typeof event !== 'object' || !('name' in event.__proto__.constructor))
+			{
+				throw new Error("Expected an Event instance")
+			}
+
+			let name = event.__proto__.constructor.name
+
+			assertNameIsValid(name)
+
+			return name
+		}
+
 		/**
 		 * @interface
 		 */
-		function Subject() { }
+		function Subject()
+		{
+
+		}
 
 		Subject.prototype = {
 
@@ -190,13 +245,13 @@
 			 *
 			 * @protected
 			 *
-			 * @param {string|null} type The event type, of `null` to get all observers.
+			 * @param {string|null} name Event name, or `null` to get all observers.
 			 *
 			 * @return {Array}
 			 */
-			getObservers: function (type) {
+			getObservers: function (name) {
 
-				var observers
+				let observers
 
 				if (!(OBSERVER_PROPERTY in this)) {
 					this[OBSERVER_PROPERTY] = []
@@ -204,32 +259,33 @@
 
 				observers = this[OBSERVER_PROPERTY]
 
-				if (!type) {
+				if (!name) {
 					return observers
 				}
 
-				if (!(type in observers)) {
-					observers[type] = []
+				if (!(name in observers)) {
+					observers[name] = []
 				}
 
-				return observers[type]
+				return observers[name]
 			},
 
 			/**
 			 * Attach an observer.
 			 *
-			 * @param {string} type Event type.
+			 * @param {function} constructor Event constructor.
 			 * @param {function} callback
 			 *
 			 * @return {this}
 			 */
-			observe: function (type, callback) {
+			observe: function (constructor, callback) {
 
-				var observers = this.getObservers(type)
+				let name = retrieveNameFromConstructor(constructor)
+				let observers = this.getObservers(name)
 
 				if (observers.indexOf(callback) !== -1)
 				{
-					throw new Error("Observer already attached for type `" + type + '`')
+					throw new Error("Observer already attached for event `" + name + '`')
 				}
 
 				observers.push(callback)
@@ -246,12 +302,13 @@
 			 */
 			unobserve: function (callback) {
 
-				var observers = this.getObservers(null), type, typeObservers, k
+				let observers = this.getObservers(null)
+				let typeObservers
 
-				for (type in Object.keys(observers))
+				for (let type in Object.keys(observers))
 				{
 					typeObservers = observers[type]
-					k = typeObservers.indexOf(callback)
+					let k = typeObservers.indexOf(callback)
 
 					if (k === -1) continue
 
@@ -264,25 +321,25 @@
 			/**
 			 * Notify observers of a change.
 			 *
-			 * @param {string} type
-			 * @param {Array} payload
+			 * @param {object} event
 			 *
 			 * @return {this}
 			 */
-			notify: function (type, payload) {
+			notify: function (event) {
 
-				var observers = this.getObservers(type), i, y
+				let name = retrieveNameFromInstance(event)
+				let observers = this.getObservers(name)
 
 				if (!observers.length)
 				{
 					return this
 				}
 
-				for (i = 0, y = observers.length; i < y; i++)
+				for (let i = 0, y = observers.length; i < y; i++)
 				{
 					try
 					{
-						observers[i].apply(null, payload)
+						observers[i].call(null, event)
 					}
 					catch (e)
 					{
@@ -295,14 +352,25 @@
 		}
 
 		/**
+		 * Creates an event given a name and a constructor.
+		 *
+		 * @param {string} name
+		 * @param {function} constructor
+		 *
+		 * @returns {function}
+		 */
+		Subject.createEvent = function (name, constructor) {
+
+			Object.defineProperty(constructor, 'name', { value: name })
+
+			return constructor
+
+		}
+
+		/**
 		 * @interface
 		 */
-		Brickrouge.Subject = Subject
-
-		Brickrouge.observe = Subject.prototype.observe
-		Brickrouge.unobserve = Subject.prototype.unobserve
-		Brickrouge.notify = Subject.prototype.notify
-		Brickrouge.getObservers = Subject.prototype.getObservers
+		return Brickrouge.Subject = Subject
 
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
 
@@ -313,9 +381,10 @@
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 
-		__webpack_require__(1)
+		__webpack_require__(1),
+		__webpack_require__(3)
 
-	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge) {
+	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge, Subject) {
 
 		"use strict";
 
@@ -328,6 +397,46 @@
 		var factories = []
 		var widgets = []
 		var parsed = []
+
+		/**
+		 * @event Brickrouge#running
+		 * @type {object}
+		 */
+		let RunningEvent = Subject.createEvent('running', function () {
+
+		})
+
+		/**
+		 * @param {object} widget
+		 *
+		 * @event Brickrouge#widget
+		 * @type {object}
+		 * @property {object} widget - The widget that was built.
+		 */
+		let WidgetEvent = Subject.createEvent('widget', function (widget) {
+
+			this.widget = widget
+
+		})
+
+		/**
+		 * @param {Element} fragment
+		 * @param {Array<Element>} elements
+		 * @param {Array<object>} widgets
+		 *
+		 * @event Brickrouge#update
+		 * @type {object}
+		 * @property {Element} fragment - The fragment that triggered the update.
+		 * @property {Array<Element>} elements - The new widget elements.
+		 * @property {Array<object>} widgets - The widgets that were built.
+		 */
+		let UpdateEvent = Subject.createEvent('update', function (fragment, elements, widgets) {
+
+			this.fragment = fragment
+			this.elements = elements
+			this.widgets = widgets
+
+		})
 
 		/**
 		 * Return the factory of a widget type.
@@ -416,6 +525,8 @@
 		 *
 		 * @throw Error in attempt to build a widget from an element without {@link IS_ATTRIBUTE}, or
 		 * when the factory fails to build the widget.
+		 *
+		 * @fires Brickrouge#widget
 		 */
 		function build(element)
 		{
@@ -446,7 +557,7 @@
 
 			try
 			{
-				Brickrouge.notify('widget', [ widget ])
+				Brickrouge.notify(new WidgetEvent(widget))
 			}
 			catch (e)
 			{
@@ -479,6 +590,8 @@
 		 * Parse a DOM fragment for widgets to build.
 		 *
 		 * @param {Element} fragment
+		 *
+		 * @fires Brickrouge#update
 		 */
 		function parse(fragment)
 		{
@@ -514,7 +627,7 @@
 
 			parsed.splice(parsed.indexOf(fragment), 1)
 
-			Brickrouge.notify('update', [ fragment, elements, widgets ])
+			Brickrouge.notify(new UpdateEvent(fragment, elements, widgets))
 		}
 
 		/**
@@ -582,34 +695,55 @@
 			factories[type] = factory
 		}
 
-		Brickrouge.isWidget = isWidget
-		Brickrouge.isBuilt = isBuilt
-		Brickrouge.register = register
-		Brickrouge.registered = factory
-		Brickrouge.from = from
-		Brickrouge.run = function () {
+		/**
+		 * @fires Brickrouge#running
+		 */
+		function run() {
 
 			monitor()
 			parse(document.body)
 
-			Brickrouge.notify('running')
+			Brickrouge.notify(new RunningEvent)
 
 		}
 
-		return Brickrouge.Widget = {
+		Object.defineProperties(Brickrouge, {
 
-			IS_ATTRIBUTE: IS_ATTRIBUTE,
-			BUILT_ATTRIBUTE: BUILT_ATTRIBUTE,
-			OPTIONS_ATTRIBUTE: OPTIONS_ATTRIBUTE,
-			SELECTOR: WIDGET_SELECTOR,
+			EVENT_UPDATE:  { value: UpdateEvent },
+			EVENT_RUNNING: { value: RunningEvent },
+			EVENT_WIDGET:  { value: WidgetEvent },
 
-			from: from,
-			register: register,
-			registered: factory
+			isWidget:      { value: isWidget },
+			isBuilt:       { value: isBuilt },
+			register:      { value: register },
+			registered:    { value: factory },
+			from:          { value: from },
+			run:           { value: run }
+
+		})
+
+		let Widget = {
 
 		}
 
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		Object.defineProperties(Widget, {
+
+			IS_ATTRIBUTE:      { value: IS_ATTRIBUTE },
+			BUILT_ATTRIBUTE:   { value: BUILT_ATTRIBUTE },
+			OPTIONS_ATTRIBUTE: { value: OPTIONS_ATTRIBUTE },
+			SELECTOR:          { value: WIDGET_SELECTOR },
+
+			isWidget:      { value: isWidget },
+			isBuilt:       { value: isBuilt },
+			register:      { value: register },
+			registered:    { value: factory },
+			from:          { value: from }
+
+		})
+
+		return Brickrouge.Widget = Widget
+
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
 
 
 /***/ },

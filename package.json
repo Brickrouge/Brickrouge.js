@@ -1,6 +1,6 @@
 {
   "name": "brickrouge",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Creates interoperable custom elements",
   "author": "Olivier LAVIALE <olivier.laviale@gmail.com> (http://olvlvl.com)",
   "main": "dist/brickrouge.js",

@@ -40,7 +40,7 @@ button is pressed.
 	}
 
 	// Registering factory for 'copy' widgets
-	Brickrouge.register('copy', function(element, options) {
+	Brickrouge.register('copy', (element, options) => {
 		return new Copy(element, options)
 	})
 
@@ -80,7 +80,7 @@ The _widget_ event is fired after a widget has been built.
  * @param {Brickrouge.EVENT_WIDGET} ev
  * @listens Brickrouge#widget
  */
-Brickrouge.observe(Brickrouge.EVENT_WIDGET, function(ev) {
+Brickrouge.observe(Brickrouge.EVENT_WIDGET, ev => {
 
     console.log('A widget has been built:', ev.widget)
 
@@ -100,7 +100,7 @@ The _update_ event is fired after the DOM was updated.
  * @param {Brickrouge.EVENT_UPDATE} ev
  * @listens Brickrouge#update
  */
-Brickrouge.observe(Brickrouge.EVENT_UPDATE, function(ev) {
+Brickrouge.observe(Brickrouge.EVENT_UPDATE, ev => {
 
     console.log('This fragment updated the DOM:', ev.fragment)
     console.log('These elements are new widgets:', ev.elements)
@@ -124,7 +124,7 @@ The _running_ event is fired after **Brickrouge** is ran.
  * @param {Brickrouge.EVENT_RUNNING} ev
  * @listens Brickrouge#running
  */
-Brickrouge.observe(Brickrouge.EVENT_RUNNING, function(ev) {
+Brickrouge.observe(Brickrouge.EVENT_RUNNING, ev => {
 
 	console.log('Brickrouge is running, we can do stuff')
 

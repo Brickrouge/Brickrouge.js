@@ -305,7 +305,7 @@
 
 		const UNIQUE_NUMBER_PROPERTY = 'uniqueNumber'
 
-		var uniqueNumberIndex = 0
+		let uniqueNumberIndex = 0
 
 		/**
 		 * Return the unique identifier a node.
@@ -314,7 +314,7 @@
 		 *
 		 * @return {number}
 		 */
-		Brickrouge.uidOf = function(node) {
+		Brickrouge.uidOf = function (node) {
 
 			return node[UNIQUE_NUMBER_PROPERTY] || (node[UNIQUE_NUMBER_PROPERTY] = ++uniqueNumberIndex)
 
@@ -325,7 +325,7 @@
 		 *
 		 * @param {Element} element
 		 */
-		Brickrouge.empty = function(element) {
+		Brickrouge.empty = function (element) {
 
 			while (element.firstChild)
 			{
@@ -341,10 +341,12 @@
 		 *
 		 * @return {string}
 		 */
-		Brickrouge.camelCase = function(string) {
+		Brickrouge.camelCase = function (string) {
 
-			return String(string).replace(/-\D/g, function(match) {
+			return String(string).replace(/-\D/g, match => {
+
 				return match.charAt(1).toUpperCase()
+
 			})
 
 		}
@@ -360,17 +362,12 @@
 			 */
 			from: function (element) {
 
-				var dataset = {}
-					, attributes = element.attributes
-					, i = 0
-					, y = attributes.length
-					, attr
+				const dataset = {}
+				const attributes = element.attributes
 
-				for (; i < y; i++)
+				for (let attr of attributes)
 				{
-					attr = attributes[i]
-
-					if (!attr.name.match(/^data-/)) continue;
+					if (!attr.name.match(/^data-/)) continue
 
 					dataset[Brickrouge.camelCase(attr.name.substring(5))] = attr.value
 				}
@@ -401,6 +398,7 @@
 		const BUILT_ATTRIBUTE = 'brickrouge-built'
 		const OPTIONS_ATTRIBUTE = 'brickrouge-options'
 		const WIDGET_SELECTOR = '[' + IS_ATTRIBUTE + ']'
+		const WIDGET_NOT_BUILT_SELECTOR = '[' + IS_ATTRIBUTE + ']:not([' + BUILT_ATTRIBUTE + '])'
 
 		const factories = []
 		const widgets = []
@@ -459,7 +457,7 @@
 		{
 			if (!(type in factories))
 			{
-				throw new Error("There is no widget factory for type `" + type + "`")
+				throw new Error(`There is no widget factory for type \`${type}\``)
 			}
 
 			return factories[type]
@@ -486,7 +484,7 @@
 		 */
 		function isBuilt(element)
 		{
-			var uniqueNumber = Brickrouge.uidOf(element)
+			const uniqueNumber = Brickrouge.uidOf(element)
 
 			return uniqueNumber in widgets
 		}
@@ -538,19 +536,22 @@
 		 */
 		function build(element)
 		{
-			var type = element.getAttribute(IS_ATTRIBUTE)
-			, widget = null
+			const type = element.getAttribute(IS_ATTRIBUTE)
+			let widget = null
 
 			if (!type)
 			{
 				invalidate(element)
 
-				throw new Error("The `" + IS_ATTRIBUTE + "` attribute is not defined or empty.")
+				throw new Error(`The \`${IS_ATTRIBUTE}\` attribute is not defined or empty.`)
 			}
 
-			try {
+			try
+			{
 				widget = factory(type)(element, resolveOptions(element))
-			} catch (e) {
+			}
+			catch (e)
+			{
 				console.error(e)
 			}
 
@@ -558,7 +559,7 @@
 			{
 				invalidate(element)
 
-				throw new Error("The widget factory `" + type + "` failed to build the widget.")
+				throw new Error(`The widget factory \`${type}\` failed to build the widget.`)
 			}
 
 			element.setAttribute(BUILT_ATTRIBUTE, "")
@@ -584,7 +585,7 @@
 		 */
 		function from(element)
 		{
-			var uniqueNumber = Brickrouge.uidOf(element)
+			const uniqueNumber = Brickrouge.uidOf(element)
 
 			if (uniqueNumber in widgets)
 			{
@@ -603,7 +604,7 @@
 		 */
 		function parse(fragment)
 		{
-			var elements, i = 0, j, widgets = []
+			const widgets = []
 
 			fragment = fragment || document.body
 
@@ -615,20 +616,26 @@
 
 			if (isWidget(fragment) && !isBuilt(fragment))
 			{
-				try {
+				try
+				{
 					widgets.push(from(fragment))
-				} catch (e) {
+				}
+				catch (e)
+				{
 					console.error(e)
 				}
 			}
 
-			elements = fragment.querySelectorAll('[' + IS_ATTRIBUTE + ']:not([' + BUILT_ATTRIBUTE + '])')
+			let elements = fragment.querySelectorAll(WIDGET_NOT_BUILT_SELECTOR)
 
-			for (j = elements.length ; i < j ; i++)
+			for (let element of elements)
 			{
-				try {
-					widgets.push(from(elements[i]))
-				} catch (e) {
+				try
+				{
+					widgets.push(from(element))
+				}
+				catch (e)
+				{
 					console.error(e)
 				}
 			}
@@ -643,19 +650,20 @@
 		 */
 		function monitor()
 		{
-			var observer = MutationObserver || WebkitMutationObserver
+			const observer = MutationObserver || WebkitMutationObserver
 
 			function monitorByObserver(observer)
 			{
-				new observer(function(mutations) {
+				new observer(mutations => {
 
-					var elements = []
+					const elements = []
 
-					mutations.forEach(function(mutation) {
+					mutations.forEach(mutation => {
 
-						Array.prototype.forEach.call(mutation.addedNodes, function(node) {
+						Array.prototype.forEach.call(mutation.addedNodes, node => {
 
-							if (!(node instanceof Element) || elements.indexOf(node) !== -1) {
+							if (!(node instanceof Element) || elements.indexOf(node) !== -1)
+							{
 								return
 							}
 
@@ -674,9 +682,9 @@
 
 			function monitorByPolling()
 			{
-				var previousState = document.body.innerHTML
+				let previousState = document.body.innerHTML
 
-				setInterval(function () {
+				setInterval(() => {
 
 					if (previousState == document.body.innerHTML) {
 						return
@@ -730,7 +738,7 @@
 
 		})
 
-		let Widget = {
+		const Widget = {
 
 		}
 
@@ -772,15 +780,16 @@
 		 *
 		 * @returns {Element}
 		 */
-		Brickrouge.clone = function(element) {
+		Brickrouge.clone = function (element) {
 
 			const BUILT_ATTRIBUTE = widget.BUILT_ATTRIBUTE
-
-			var clone = element.cloneNode(true)
+			const clone = element.cloneNode(true)
 
 			clone.removeAttribute(BUILT_ATTRIBUTE)
-			Array.prototype.forEach.call(clone.querySelectorAll('[' + BUILT_ATTRIBUTE + ']'), function(element) {
+			Array.prototype.forEach.call(clone.querySelectorAll('[' + BUILT_ATTRIBUTE + ']'), element => {
+
 				element.removeAttribute(BUILT_ATTRIBUTE)
+
 			})
 
 			return clone

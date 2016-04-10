@@ -16,5 +16,8 @@
     "element",
     "html"
   ],
-  "licence": "BSD 3-Clause"
+  "licence": "BSD 3-Clause",
+  "dependencies": {
+    "olvlvl-subject": "^0.0.2"
+  }
 }

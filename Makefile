@@ -2,13 +2,12 @@ BRICKROUGE_JS_COMPRESSED = dist/brickrouge.js
 BRICKROUGE_JS_UNCOMPRESSED = dist/brickrouge-uncompressed.js
 BRICKROUGE_JS_FILES = $(shell ls lib/*.js)
 
-JS_COMPRESSOR = curl -s \
-	-d compilation_level=SIMPLE_OPTIMIZATIONS \
-	-d output_format=text \
-	-d output_info=compiled_code \
-	-d language=ECMASCRIPT5 \
-	--data-urlencode "js_code@$^" \
-	http://closure-compiler.appspot.com/compile
+JS_COMPRESSOR = `which uglifyjs` $^ \
+	--compress \
+	--mangle \
+	--srew-ie8 \
+	--source-map $@.map \
+	--source-map-url https://github.com/Brickrouge/Brickrouge.js/tree/master/$@.map
 #JS_COMPRESSOR = cat $^ # uncomment this line to produce uncompressed files
 
 all: \

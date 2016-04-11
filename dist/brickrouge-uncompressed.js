@@ -58,10 +58,16 @@
 		__webpack_require__(4),
 		__webpack_require__(5)
 
-	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge, Subject) {
+	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge, Subject, Widget) {
 
 		Object.assign(Brickrouge, Subject.prototype)
-		Object.defineProperty(Brickrouge, 'Subject', { value: Subject })
+
+		Object.defineProperties(Brickrouge, {
+
+			Subject: { value: Subject },
+			Widget:  { value: Widget }
+
+		})
 
 		return window.Brickrouge = Brickrouge
 
@@ -295,93 +301,6 @@
 
 /***/ },
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-
-		__webpack_require__(1)
-
-	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge) {
-
-		const UNIQUE_NUMBER_PROPERTY = 'uniqueNumber'
-
-		let uniqueNumberIndex = 0
-
-		/**
-		 * Return the unique identifier a node.
-		 *
-		 * @param {Node} node
-		 *
-		 * @return {number}
-		 */
-		Brickrouge.uidOf = function (node) {
-
-			return node[UNIQUE_NUMBER_PROPERTY] || (node[UNIQUE_NUMBER_PROPERTY] = ++uniqueNumberIndex)
-
-		}
-
-		/**
-		 * Efficiently empty an element.
-		 *
-		 * @param {Element} element
-		 */
-		Brickrouge.empty = function (element) {
-
-			while (element.firstChild)
-			{
-				element.removeChild(element.firstChild)
-			}
-
-		}
-
-		/**
-		 * Camel case dashed-name.
-		 *
-		 * @param {string} string
-		 *
-		 * @return {string}
-		 */
-		Brickrouge.camelCase = function (string) {
-
-			return String(string).replace(/-\D/g, match => {
-
-				return match.charAt(1).toUpperCase()
-
-			})
-
-		}
-
-		Brickrouge.Dataset = {
-
-			/**
-			 * Return the dataset values.
-			 *
-			 * @param {Element} element
-			 *
-			 * @return {Object}
-			 */
-			from: function (element) {
-
-				const dataset = {}
-				const attributes = element.attributes
-
-				for (let attr of attributes)
-				{
-					if (!attr.name.match(/^data-/)) continue
-
-					dataset[Brickrouge.camelCase(attr.name.substring(5))] = attr.value
-				}
-
-				return dataset
-
-			}
-		}
-
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
-
-
-/***/ },
-/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
@@ -734,30 +653,129 @@
 			register:      { value: register },
 			registered:    { value: factory },
 			from:          { value: from },
-			run:           { value: run }
+			run:           { value: run },
+
+			observeUpdate: { value: function (callback) {
+
+				this.observe(UpdateEvent, callback)
+
+			}},
+
+			observeRunning: { value: function (callback) {
+
+				this.observe(RunningEvent, callback)
+
+			}},
+
+			observeWidget: { value: function (callback) {
+
+				this.observe(WidgetEvent, callback)
+
+			}}
 
 		})
 
-		const Widget = {
-
-		}
-
-		Object.defineProperties(Widget, {
+		return Object.defineProperties({}, {
 
 			IS_ATTRIBUTE:      { value: IS_ATTRIBUTE },
 			BUILT_ATTRIBUTE:   { value: BUILT_ATTRIBUTE },
 			OPTIONS_ATTRIBUTE: { value: OPTIONS_ATTRIBUTE },
 			SELECTOR:          { value: WIDGET_SELECTOR },
 
-			isWidget:      { value: isWidget },
-			isBuilt:       { value: isBuilt },
-			register:      { value: register },
-			registered:    { value: factory },
-			from:          { value: from }
+			isWidget:          { value: isWidget },
+			isBuilt:           { value: isBuilt },
+			register:          { value: register },
+			registered:        { value: factory },
+			from:              { value: from }
 
 		})
 
-		return Brickrouge.Widget = Widget
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
+
+		__webpack_require__(1)
+
+	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge) {
+
+		const UNIQUE_NUMBER_PROPERTY = 'uniqueNumber'
+
+		let uniqueNumberIndex = 0
+
+		/**
+		 * Return the unique identifier a node.
+		 *
+		 * @param {Node} node
+		 *
+		 * @return {number}
+		 */
+		Brickrouge.uidOf = function (node) {
+
+			return node[UNIQUE_NUMBER_PROPERTY] || (node[UNIQUE_NUMBER_PROPERTY] = ++uniqueNumberIndex)
+
+		}
+
+		/**
+		 * Efficiently empty an element.
+		 *
+		 * @param {Element} element
+		 */
+		Brickrouge.empty = function (element) {
+
+			while (element.firstChild)
+			{
+				element.removeChild(element.firstChild)
+			}
+
+		}
+
+		/**
+		 * Camel case dashed-name.
+		 *
+		 * @param {string} string
+		 *
+		 * @return {string}
+		 */
+		Brickrouge.camelCase = function (string) {
+
+			return String(string).replace(/-\D/g, match => {
+
+				return match.charAt(1).toUpperCase()
+
+			})
+
+		}
+
+		Brickrouge.Dataset = {
+
+			/**
+			 * Return the dataset values.
+			 *
+			 * @param {Element} element
+			 *
+			 * @return {Object}
+			 */
+			from: function (element) {
+
+				const dataset = {}
+				const attributes = element.attributes
+
+				for (let attr of attributes)
+				{
+					if (!attr.name.match(/^data-/)) continue
+
+					dataset[Brickrouge.camelCase(attr.name.substring(5))] = attr.value
+				}
+
+				return dataset
+
+			}
+		}
 
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))
 
@@ -769,7 +787,7 @@
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 
 		__webpack_require__(1),
-		__webpack_require__(4)
+		__webpack_require__(3)
 
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge, widget) {
 

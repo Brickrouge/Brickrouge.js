@@ -85,6 +85,10 @@ Brickrouge.observe(Brickrouge.EVENT_WIDGET, ev => {
     console.log('A widget has been built:', ev.widget)
 
 })
+
+// or
+
+Brickrouge.observeWidget(ev => { … })
 ```
 
 
@@ -107,6 +111,10 @@ Brickrouge.observe(Brickrouge.EVENT_UPDATE, ev => {
     console.log('These widgets have been built:', ev.widgets)
 
 })
+
+// or
+
+Brickrouge.observeUpdate(ev => { … })
 ```
 
 > **Note:** The event is fired a first time after **Brickrouge** is ran.
@@ -129,6 +137,10 @@ Brickrouge.observe(Brickrouge.EVENT_RUNNING, ev => {
 	console.log('Brickrouge is running, we can do stuff')
 
 })
+
+// or
+
+Brickrouge.observeRunning(ev => { … })
 ```
 
 
@@ -228,7 +240,10 @@ and creates it if needed.
 
 ## Build
 
-To build **Brickrouge.js** you first need to [install webpack](http://webpack.github.io/docs/installation.html), then just use the command `make`. The files `dist/brickrouge.js` and `dist/brickrouge-uncompressed.js` should be built.
+To build **Brickrouge.js** you first need to [install
+webpack](http://webpack.github.io/docs/installation.html) and the `harmony` branch of
+[Uglifyjs2](https://github.com/mishoo/UglifyJS2), then just use the command `make`. The files
+`dist/brickrouge.js` and `dist/brickrouge-uncompressed.js` should be built.
 
 ```bash
 $ git clone git@github.com:Brickrouge/Brickrouge.js.git

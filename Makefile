@@ -1,6 +1,6 @@
 BRICKROUGE_JS_COMPRESSED = dist/brickrouge.js
 BRICKROUGE_JS_UNCOMPRESSED = dist/brickrouge-uncompressed.js
-BRICKROUGE_JS_FILES = $(shell ls lib/*.js)
+BRICKROUGE_JS_FILES = $(shell ls lib/*.js node_modules/olvlvl-subject/*.js node_modules/olvlvl-mixin/*.js)
 
 JS_COMPRESSOR = `which uglifyjs` $^ \
 	--compress \

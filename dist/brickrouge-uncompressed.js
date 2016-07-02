@@ -56,16 +56,18 @@
 		__webpack_require__(2),
 		__webpack_require__(3),
 		__webpack_require__(4),
-		__webpack_require__(5)
+		__webpack_require__(6)
 
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge, Subject, Widget) {
 
-		Object.assign(Brickrouge, Subject.prototype)
-
 		Object.defineProperties(Brickrouge, {
 
-			Subject: { value: Subject },
-			Widget:  { value: Widget }
+			Subject:   { value: Subject },
+			Widget:    { value: Widget },
+
+			notify:    { value: Subject.prototype.notify },
+			observe:   { value: Subject.prototype.observe },
+			unobserve: { value: Subject.prototype.unobserve }
 
 		})
 
@@ -156,20 +158,6 @@
 	}
 
 	/**
-	 * Creates an event constructor given a name and a constructor.
-	 *
-	 * @param {function} constructor
-	 *
-	 * @returns {function}
-	 */
-	function createEvent(constructor)
-	{
-	    constructor[NAME_PROPERTY] = Symbol("Event symbol")
-
-	    return constructor
-	}
-
-	/**
 	 * Return the observers array.
 	 *
 	 * @protected
@@ -201,15 +189,21 @@
 	    return observers[name]
 	}
 
-	/**
-	 * @constructor
-	 */
-	function Subject()
+	class Subject
 	{
+	    /**
+	     * Creates an event constructor given a name and a constructor.
+	     *
+	     * @param {function} constructor
+	     *
+	     * @returns {function}
+	     */
+	    static createEvent(constructor)
+	    {
+	        constructor[NAME_PROPERTY] = Symbol("Event symbol")
 
-	}
-
-	Subject.prototype = {
+	        return constructor
+	    }
 
 	    /**
 	     * Attach an observer.
@@ -219,8 +213,8 @@
 	     *
 	     * @return {Subject}
 	     */
-	    observe: function (constructor, callback) {
-
+	    observe(constructor, callback)
+	    {
 	        const symbol = retrieveNameFromConstructor(constructor)
 	        const observers = getObservers(this, symbol)
 
@@ -232,7 +226,7 @@
 	        observers.push(callback)
 
 	        return this
-	    },
+	    }
 
 	    /**
 	     * Detach an observer.
@@ -241,8 +235,8 @@
 	     *
 	     * @return {Subject}
 	     */
-	    unobserve: function (callback) {
-
+	    unobserve(callback)
+	    {
 	        const observers = getObservers(this, null)
 
 	        for (let type of Object.getOwnPropertySymbols(observers))
@@ -259,7 +253,7 @@
 	        }
 
 	        return this
-	    },
+	    }
 
 	    /**
 	     * Notify observers of a change.
@@ -268,8 +262,8 @@
 	     *
 	     * @return {Subject}
 	     */
-	    notify: function (event) {
-
+	    notify(event)
+	    {
 	        const name = retrieveNameFromInstance(event)
 	        const observers = getObservers(this, name)
 
@@ -288,8 +282,6 @@
 	        return this
 	    }
 	}
-
-	Object.defineProperty(Subject, 'createEvent', { value: createEvent })
 
 	var module
 
@@ -699,9 +691,10 @@
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
 
-		__webpack_require__(1)
+		__webpack_require__(1),
+		__webpack_require__(5)
 
-	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge) {
+	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Brickrouge, mixin) {
 
 		const UNIQUE_NUMBER_PROPERTY = 'uniqueNumber'
 
@@ -751,6 +744,8 @@
 
 		}
 
+		Brickrouge.mixin = mixin
+
 		Brickrouge.Dataset = {
 
 			/**
@@ -782,6 +777,42 @@
 
 /***/ },
 /* 5 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	/**
+	 * @param {Function} Base The parent class to extend.
+	 * @param ...mixins The classes to mix in.
+	 *
+	 * @returns {{}}
+	 */
+	function mixin(Base /*, ...mixins*/)
+	{
+	    const properties = {}
+	    const mixins = Array.prototype.slice.call(arguments, 1) // until nodejs gets rest parameters
+
+	    for (let mixin of mixins) {
+	        let prototype = mixin.prototype
+	        for (let property of Object.getOwnPropertyNames(prototype)) {
+	            properties[property] = { value: prototype[property] }
+	        }
+	    }
+
+	    delete properties.constructor
+
+	    const mixed = class extends Base {}
+
+	    Object.defineProperties(mixed.prototype, properties)
+
+	    return mixed
+	}
+
+	module.exports = mixin
+
+
+/***/ },
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [

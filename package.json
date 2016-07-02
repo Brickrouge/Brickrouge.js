@@ -18,6 +18,7 @@
   ],
   "licence": "BSD 3-Clause",
   "dependencies": {
-    "olvlvl-subject": "^0.0.2"
+    "olvlvl-subject": "^0.0.3",
+    "olvlvl-mixin": "^0.0.2"
   }
 }

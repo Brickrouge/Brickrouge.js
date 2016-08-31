@@ -18,7 +18,7 @@
   ],
   "licence": "BSD 3-Clause",
   "dependencies": {
-    "olvlvl-subject": "^0.0.3",
+    "olvlvl-subject": "git://github.com/olvlvl/olvlvl-subject.git",
     "olvlvl-mixin": "^0.0.2"
   }
 }

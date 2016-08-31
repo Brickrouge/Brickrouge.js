@@ -1,2 +1,720 @@
-!function(t){function e(r){if(n[r])return n[r].exports;var o=n[r]={exports:{},id:r,loaded:!1};return t[r].call(o.exports,o,o.exports,e),o.loaded=!0,o.exports}var n={};return e.m=t,e.c=n,e.p="",e(0)}([function(t,e,n){var r,o;r=[n(1),n(2),n(3),n(4),n(6)],o=function(t,e,n){return Object.defineProperties(t,{Subject:{value:e},Widget:{value:n},notify:{value:e.prototype.notify},observe:{value:e.prototype.observe},unobserve:{value:e.prototype.unobserve}}),window.Brickrouge=t}.apply(e,r),!(void 0!==o&&(t.exports=o))},function(t,e,n){var r;r=function(){return{}}.call(e,n,e,t),!(void 0!==r&&(t.exports=r))},function(t,e){"use strict";function n(t){if("symbol"!=typeof t)throw new Error("Event name is not a symbol")}function r(t){if("function"!=typeof t||!(c in t))throw new Error(`Expecting an event instance, got: ${t}`);const e=t[c];return n(e),e}function o(t){if("object"!=typeof t||!(c in t.__proto__.constructor))throw new Error("Expected an Event instance");const e=t.__proto__.constructor[c];return n(e),e}function i(t,e){u in t||(t[u]=[]);const n=t[u];return e?(e in n||(n[e]=[]),n[e]):n}const u=Symbol("Subject observers"),c=Symbol("Subject event name");class s{static createEvent(t){t[c]=Symbol("Event symbol");return t}observe(t,e){const n=r(t);const o=i(this,n);if(o.indexOf(e)!==-1){throw new Error("Observer already attached",t)}o.push(e);return this}unobserve(t){const e=i(this,null);for(let n of Object.getOwnPropertySymbols(e)){let r=e[n];let o=r.indexOf(t);if(o===-1){continue}r.splice(o,1)}return this}notify(t){const e=o(t);const n=i(this,e);for(let r of n){try{r.call(null,t)}catch(u){console.error(u)}}return this}}var t;t&&(t.exports=s)},function(t,e,n){var r,o;r=[n(1),n(2)],o=function(t,e){"use strict";function n(t){if(!(t in E))throw new Error(`There is no widget factory for type \`${t}\``);return E[t]}function r(t){return"object"==typeof t&&"getAttribute"in t&&!!t.getAttribute(b)}function o(e){const n=t.uidOf(e);return n in g}function i(t){t.setAttribute(p,t.getAttribute(b)),t.removeAttribute(b)}function u(e){return e.hasAttribute(y)?JSON.parse(e.getAttribute(y)):t.Dataset.from(e)}function c(e){const r=e.getAttribute(b);let o=null;if(!r)throw i(e),new Error(`The \`${b}\` attribute is not defined or empty.`);try{o=n(r)(e,u(e))}catch(c){console.error(c)}if(!o)throw i(e),new Error(`The widget factory \`${r}\` failed to build the widget.`);e.setAttribute(d,"");try{t.notify(new O(o))}catch(c){console.error(c)}return o}function s(e){const n=t.uidOf(e);return n in g?g[n]:g[n]=c(e)}function f(e){const n=[];if(e=e||document.body,w.indexOf(e)===-1){if(w.push(e),r(e)&&!o(e))try{n.push(s(e))}catch(i){console.error(i)}let u=e.querySelectorAll(m);for(let c of u)try{n.push(s(c))}catch(i){console.error(i)}w.splice(w.indexOf(e),1),t.notify(new A(e,u,n))}}function a(){function t(t){new t((t=>{const e=[];t.forEach((t=>{Array.prototype.forEach.call(t.addedNodes,(t=>{t instanceof Element&&e.indexOf(t)===-1&&e.push(t)}))})),e.length&&e.forEach(f)})).observe(document.body,{childList:!0,subtree:!0})}function e(){let t=document.body.innerHTML;setInterval((()=>{t!=document.body.innerHTML&&(t=document.body.innerHTML,f(document.body))}),1e3)}const n=MutationObserver||WebkitMutationObserver;n?t(n):e()}function l(t,e){E[t]=e}function v(){a(),f(document.body),t.notify(new T)}const b="brickrouge-is",p="brickrouge-invalid-is",d="brickrouge-built",y="brickrouge-options",h="[brickrouge-is]",m="[brickrouge-is]:not([brickrouge-built])",E=[],g=[],w=[],T=e.createEvent(function(){}),O=e.createEvent(function(t){this.widget=t}),A=e.createEvent(function(t,e,n){this.fragment=t,this.elements=e,this.widgets=n});return Object.defineProperties(t,{EVENT_UPDATE:{value:A},EVENT_RUNNING:{value:T},EVENT_WIDGET:{value:O},isWidget:{value:r},isBuilt:{value:o},register:{value:l},registered:{value:n},from:{value:s},run:{value:v},observeUpdate:{value:function(t){this.observe(A,t)}},observeRunning:{value:function(t){this.observe(T,t)}},observeWidget:{value:function(t){this.observe(O,t)}}}),Object.defineProperties({},{IS_ATTRIBUTE:{value:b},BUILT_ATTRIBUTE:{value:d},OPTIONS_ATTRIBUTE:{value:y},SELECTOR:{value:h},isWidget:{value:r},isBuilt:{value:o},register:{value:l},registered:{value:n},from:{value:s}})}.apply(e,r),!(void 0!==o&&(t.exports=o))},function(t,e,n){var r,o;r=[n(1),n(5)],o=function(t,e){const n="uniqueNumber";let r=0;t.uidOf=function(t){return t[n]||(t[n]=++r)},t.empty=function(t){for(;t.firstChild;)t.removeChild(t.firstChild)},t.camelCase=function(t){return String(t).replace(/-\D/g,(t=>{return t.charAt(1).toUpperCase()}))},t.mixin=e,t.Dataset={from:function(e){const n={},r=e.attributes;for(let o of r)o.name.match(/^data-/)&&(n[t.camelCase(o.name.substring(5))]=o.value);return n}}}.apply(e,r),!(void 0!==o&&(t.exports=o))},function(t,e){"use strict";function n(t){const e={},n=Array.prototype.slice.call(arguments,1);for(let r of n){let t=r.prototype;for(let n of Object.getOwnPropertyNames(t))e[n]={value:t[n]}}delete e.constructor;const o=class extends t{};return Object.defineProperties(o.prototype,e),o}t.exports=n},function(t,e,n){var r,o;r=[n(1),n(3)],o=function(t,e){t.clone=function(t){const n=e.BUILT_ATTRIBUTE,r=t.cloneNode(!0);return r.removeAttribute(n),Array.prototype.forEach.call(r.querySelectorAll("["+n+"]"),(t=>{t.removeAttribute(n)})),r}}.apply(e,r),!(void 0!==o&&(t.exports=o))}]);
-//# sourceMappingURL=https://github.com/Brickrouge/Brickrouge.js/tree/master/dist/brickrouge.js.map
+var Brickrouge = (function () {
+	'use strict';
+
+	const UNIQUE_NUMBER_PROPERTY = 'uniqueNumber'
+
+	let uniqueNumberIndex = 0
+
+	/**
+	 * Return the unique identifier a node.
+	 *
+	 * @param {Node} node
+	 *
+	 * @return {number}
+	 */
+	function uidOf(node) {
+
+		return node[UNIQUE_NUMBER_PROPERTY] || (node[UNIQUE_NUMBER_PROPERTY] = ++uniqueNumberIndex)
+
+	}
+
+	/**
+	 * Efficiently empty an element.
+	 *
+	 * @param {Element} element
+	 */
+	function empty(element) {
+
+		while (element.firstChild)
+		{
+			element.removeChild(element.firstChild)
+		}
+
+	}
+
+	/**
+	 * @param {Function} Base The parent class to extend.
+	 * @param ...mixins The classes to mix in.
+	 *
+	 * @returns {{}}
+	 */
+	function mixin(Base /*, ...mixins*/)
+	{
+		const properties = {}
+		const mixins = Array.prototype.slice.call(arguments, 1) // until nodejs gets rest parameters
+
+		for (let mixin of mixins) {
+			let prototype = mixin.prototype
+			for (let property of Object.getOwnPropertyNames(prototype)) {
+				properties[property] = { value: prototype[property] }
+			}
+		}
+
+		delete properties.constructor
+
+		const mixed = class extends Base {}
+
+		Object.defineProperties(mixed.prototype, properties)
+
+		return mixed
+	}
+
+	/**
+	 * Camel case dashed-name.
+	 *
+	 * @param {string} string
+	 *
+	 * @return {string}
+	 */
+	function camelCase(string) {
+
+		return String(string).replace(/-\D/g, match => {
+
+			return match.charAt(1).toUpperCase()
+
+		})
+
+	}
+
+	/**
+	 * Return the dataset values.
+	 *
+	 * @param {Element} element
+	 *
+	 * @return {Object}
+	 */
+	function from(element) {
+
+		const dataset = {}
+		const attributes = element.attributes
+
+		for (let attr of attributes)
+		{
+			if (!attr.name.match(/^data-/)) continue
+
+			dataset[camelCase(attr.name.substring(5))] = attr.value
+		}
+
+		return dataset
+
+	}
+
+	var Dataset = {
+
+		from: from
+
+	}
+
+	const OBSERVERS_PROPERTY = Symbol("Subject observers")
+	const NAME_PROPERTY = Symbol("Subject event name")
+
+	/**
+	 * Asserts that an event name is valid.
+	 *
+	 * @param name
+	 *
+	 * @throws Error if `name` is not a string.
+	 */
+	function assertNameIsValid(name)
+	{
+		if ('symbol' !== typeof name)
+		{
+			throw new Error("Event name is not a symbol")
+		}
+	}
+
+	/**
+	 * Retrieve event name from an event constructor.
+	 *
+	 * @param {function} constructor
+	 *
+	 * @returns {string}
+	 *
+	 * @throws Error if `constructor` is not an event constructor.
+	 */
+	function retrieveNameFromConstructor(constructor)
+	{
+		if ('function' !== typeof constructor  || !(NAME_PROPERTY in constructor))
+		{
+			throw new Error(`Expecting an event instance, got: ${constructor}`)
+		}
+
+		const name = constructor[NAME_PROPERTY]
+
+		assertNameIsValid(name)
+
+		return name
+	}
+
+	/**
+	 * Retrieve event name from ab event instance.
+	 *
+	 * @param {object} event
+	 *
+	 * @returns {string}
+	 *
+	 * @throws Error if `event` is not an event instance.
+	 */
+	function retrieveNameFromInstance(event)
+	{
+		if ('object' !== typeof event || !(NAME_PROPERTY in event.__proto__.constructor))
+		{
+			throw new Error("Expected an Event instance")
+		}
+
+		const name = event.__proto__.constructor[NAME_PROPERTY]
+
+		assertNameIsValid(name)
+
+		return name
+	}
+
+	/**
+	 * Return the observers array.
+	 *
+	 * @protected
+	 *
+	 * @param {Subject} subject
+	 * @param {string|null} name Event name, or `null` to get all observers.
+	 *
+	 * @return {Array}
+	 */
+	function getObservers(subject, name) {
+
+		if (!(OBSERVERS_PROPERTY in subject))
+		{
+			subject[OBSERVERS_PROPERTY] = []
+		}
+
+		const observers = subject[OBSERVERS_PROPERTY]
+
+		if (!name)
+		{
+			return observers
+		}
+
+		if (!(name in observers))
+		{
+			observers[name] = []
+		}
+
+		return observers[name]
+	}
+
+	var Subject = class
+	{
+		/**
+		 * Creates an event constructor given a name and a constructor.
+		 *
+		 * @param {function} constructor
+		 *
+		 * @returns {function}
+		 */
+		static createEvent(constructor)
+		{
+			constructor[NAME_PROPERTY] = Symbol("Event symbol")
+
+			return constructor
+		}
+
+		/**
+		 * Attach an observer.
+		 *
+		 * @param {function} constructor Event constructor.
+		 * @param {function} callback
+		 *
+		 * @return {Subject}
+		 */
+		observe(constructor, callback)
+		{
+			const symbol = retrieveNameFromConstructor(constructor)
+			const observers = getObservers(this, symbol)
+
+			if (observers.indexOf(callback) !== -1)
+			{
+				throw new Error("Observer already attached", constructor)
+			}
+
+			observers.push(callback)
+
+			return this
+		}
+
+		/**
+		 * Detach an observer.
+		 *
+		 * @param {function} callback
+		 *
+		 * @return {Subject}
+		 */
+		unobserve(callback)
+		{
+			const observers = getObservers(this, null)
+
+			for (let type of Object.getOwnPropertySymbols(observers))
+			{
+				let typeObservers = observers[type]
+				let k = typeObservers.indexOf(callback)
+
+				if (k === -1)
+				{
+					continue
+				}
+
+				typeObservers.splice(k, 1)
+			}
+
+			return this
+		}
+
+		/**
+		 * Notify observers of a change.
+		 *
+		 * @param {object} event
+		 *
+		 * @return {Subject}
+		 */
+		notify(event)
+		{
+			const name = retrieveNameFromInstance(event)
+			const observers = getObservers(this, name)
+
+			for (let observer of observers)
+			{
+				try
+				{
+					observer.call(null, event)
+				}
+				catch (e)
+				{
+					console.error(e)
+				}
+			}
+
+			return this
+		}
+	}
+
+	/**
+	 * @event Brickrouge#running
+	 * @type {Function}
+	 */
+	const RunningEvent = Subject.createEvent(function () {
+
+	})
+
+	/**
+	 * @param {object} widget
+	 *
+	 * @event Brickrouge#widget
+	 * @type {Function}
+	 * @property {object} widget - The widget that was built.
+	 */
+	const WidgetEvent = Subject.createEvent(function (widget) {
+
+		this.widget = widget
+
+	})
+
+	/**
+	 * @param {Element} fragment
+	 * @param {Array<Element>} elements
+	 * @param {Array<object>} widgets
+	 *
+	 * @event Brickrouge#update
+	 * @type {Function}
+	 * @property {Element} fragment - The fragment that triggered the update.
+	 * @property {Array<Element>} elements - The new widget elements.
+	 * @property {Array<object>} widgets - The widgets that were built.
+	 */
+	const UpdateEvent = Subject.createEvent(function (fragment, elements, widgets) {
+
+		this.fragment = fragment
+		this.elements = elements
+		this.widgets = widgets
+
+	})
+
+	var Brickrouge$1 = {
+
+		notify:    Subject.prototype.notify,
+		observe:   Subject.prototype.observe,
+		unobserve: Subject.prototype.unobserve
+
+	}
+
+	const IS_ATTRIBUTE = 'brickrouge-is'
+	const BUILT_ATTRIBUTE = 'brickrouge-built'
+	const OPTIONS_ATTRIBUTE = 'brickrouge-options'
+	const WIDGET_SELECTOR = '[' + IS_ATTRIBUTE + ']'
+	const INVALID_IS_ATTRIBUTE = 'brickrouge-invalid-is'
+	const WIDGET_NOT_BUILT_SELECTOR = '[' + IS_ATTRIBUTE + ']:not([' + BUILT_ATTRIBUTE + '])'
+
+	const factories = []
+	const widgets = []
+	const parsed = []
+
+	/**
+	 * Return the factory of a widget type.
+	 *
+	 * @param {string} type Widget type.
+	 *
+	 * @return {function} Widget factory.
+	 *
+	 * @throws Error in attempt to use a type for which no factory is defined.
+	 */
+	function factory(type)
+	{
+		if (!(type in factories))
+		{
+			throw new Error(`There is no widget factory for type "${type}"`)
+		}
+
+		return factories[type]
+	}
+
+	/**
+	 * Whether a node is a widget.
+	 *
+	 * @param {Element} node
+	 *
+	 * @returns {boolean} `true` if the node has the {@link IS_ATTRIBUTE} attribute, `false` otherwise.
+	 */
+	function isWidget(node)
+	{
+		return typeof node == 'object' && 'getAttribute' in node && !!node.getAttribute(IS_ATTRIBUTE)
+	}
+
+	/**
+	 * Whether a widget is built for the element.
+	 *
+	 * @param {Element} element
+	 *
+	 * @returns {boolean}
+	 */
+	function isBuilt(element)
+	{
+		const uniqueNumber = uidOf(element)
+
+		return uniqueNumber in widgets
+	}
+
+	/**
+	 * Invalidates a custom element.
+	 *
+	 * @param {Element} element
+	 */
+	function invalidate(element)
+	{
+		element.setAttribute(INVALID_IS_ATTRIBUTE, element.getAttribute(IS_ATTRIBUTE))
+
+		element.removeAttribute(IS_ATTRIBUTE)
+	}
+
+	/**
+	 * Resolve the options for the widget.
+	 *
+	 * @param {Element} element The element used to create the widget
+	 *
+	 * @return {Object}
+	 */
+	function resolveOptions(element)
+	{
+		if (element.hasAttribute(OPTIONS_ATTRIBUTE))
+		{
+			return JSON.parse(element.getAttribute(OPTIONS_ATTRIBUTE))
+		}
+
+		return Dataset.from(element)
+	}
+
+	/**
+	 * Build the widget associated with an element.
+	 *
+	 * The `brickrouge.widget` event is fired on the `window` object when a widget is constructed.
+	 * The event is fired with the widget and its element as arguments. If an error occurs while
+	 * the event is processed it is caught and logged to the console as an error.
+	 *
+	 * @param {Element} element An element
+	 *
+	 * @return {Object}
+	 *
+	 * @throw Error in attempt to build a widget from an element without {@link IS_ATTRIBUTE}, or
+	 * when the factory fails to build the widget.
+	 *
+	 * @fires Brickrouge#widget
+	 */
+	function build(element)
+	{
+		const type = element.getAttribute(IS_ATTRIBUTE)
+		let widget = null
+
+		if (!type)
+		{
+			invalidate(element)
+
+			throw new Error(`The "${IS_ATTRIBUTE}" attribute is not defined or empty.`)
+		}
+
+		try
+		{
+			widget = factory(type)(element, resolveOptions(element))
+		}
+		catch (e)
+		{
+			console.error(e)
+		}
+
+		if (!widget)
+		{
+			invalidate(element)
+
+			throw new Error(`The widget factory "${type}" failed to build the widget.`)
+		}
+
+		element.setAttribute(BUILT_ATTRIBUTE, "")
+
+		try
+		{
+			Brickrouge$1.notify(new WidgetEvent(widget))
+		}
+		catch (e)
+		{
+			console.error(e)
+		}
+
+		return widget
+	}
+
+	/**
+	 * Return the widget associated with an element.
+	 *
+	 * @param {Element} element
+	 *
+	 * @return {Object}
+	 */
+	function createOrReuse(element)
+	{
+		const uniqueNumber = uidOf(element)
+
+		if (uniqueNumber in widgets)
+		{
+			return widgets[uniqueNumber]
+		}
+
+		return widgets[uniqueNumber] = build(element)
+	}
+
+	/**
+	 * Parse a DOM fragment for widgets to build.
+	 *
+	 * @param {Element} fragment
+	 *
+	 * @fires Brickrouge#update
+	 */
+	function parse(fragment)
+	{
+		const widgets = []
+
+		fragment = fragment || document.body
+
+		if (parsed.indexOf(fragment) !== -1) {
+			return
+		}
+
+		parsed.push(fragment)
+
+		if (isWidget(fragment) && !isBuilt(fragment))
+		{
+			try
+			{
+				widgets.push(createOrReuse(fragment))
+			}
+			catch (e)
+			{
+				console.error(e)
+			}
+		}
+
+		let elements = fragment.querySelectorAll(WIDGET_NOT_BUILT_SELECTOR)
+
+		for (let element of elements)
+		{
+			try
+			{
+				widgets.push(createOrReuse(element))
+			}
+			catch (e)
+			{
+				console.error(e)
+			}
+		}
+
+		parsed.splice(parsed.indexOf(fragment), 1)
+
+		Brickrouge$1.notify(new UpdateEvent(fragment, elements, widgets))
+	}
+
+	/**
+	 * Monitor DOM mutations to build new widgets.
+	 */
+	function monitor()
+	{
+		const observer = MutationObserver || WebkitMutationObserver
+
+		function monitorByObserver(observer)
+		{
+			new observer(mutations => {
+
+				const elements = []
+
+				mutations.forEach(mutation => {
+
+					Array.prototype.forEach.call(mutation.addedNodes, node => {
+
+						if (!(node instanceof Element) || elements.indexOf(node) !== -1)
+						{
+							return
+						}
+
+						elements.push(node)
+
+					})
+
+				})
+
+				if (!elements.length) return
+
+				elements.forEach(parse)
+
+			}).observe(document.body, { childList: true, subtree: true })
+		}
+
+		function monitorByPolling()
+		{
+			let previousState = document.body.innerHTML
+
+			setInterval(() => {
+
+				if (previousState == document.body.innerHTML) {
+					return
+				}
+
+				previousState = document.body.innerHTML
+
+				parse(document.body)
+
+			}, 1000)
+		}
+
+		observer ? monitorByObserver(observer) : monitorByPolling()
+	}
+
+	/**
+	 * Registers a widget factory.
+	 *
+	 * @param {string} type Widget type.
+	 * @param {function} factory Factory callback.
+	 */
+	function register(type, factory)
+	{
+		factories[type] = factory
+	}
+
+	/**
+	 * @fires Brickrouge#running
+	 */
+	function run() {
+
+		monitor()
+		parse(document.body)
+
+		Brickrouge$1.notify(new RunningEvent)
+
+	}
+
+	var Widget = {
+
+		IS_ATTRIBUTE: IS_ATTRIBUTE,
+		BUILT_ATTRIBUTE: BUILT_ATTRIBUTE,
+		OPTIONS_ATTRIBUTE: OPTIONS_ATTRIBUTE,
+		SELECTOR: WIDGET_SELECTOR,
+
+		UpdateEvent: UpdateEvent,
+		RunningEvent: RunningEvent,
+		WidgetEvent: WidgetEvent,
+
+		isWidget: isWidget,
+		isBuilt: isBuilt,
+		register: register,
+		registered: factory,
+		from: createOrReuse,
+		run: run
+
+	}
+
+	/**
+	 * Clone a custom element, taking care of removing sensitive attributes.
+	 *
+	 * @param {Element} element
+	 *
+	 * @returns {Element}
+	 */
+	function clone(element) {
+
+		const clone = element.cloneNode(true)
+
+		clone.removeAttribute(BUILT_ATTRIBUTE)
+		Array.prototype.forEach.call(clone.querySelectorAll('[' + BUILT_ATTRIBUTE + ']'), element => {
+
+			element.removeAttribute(BUILT_ATTRIBUTE)
+
+		})
+
+		return clone
+	}
+
+	var Brickrouge = Object.defineProperties(Brickrouge$1, {
+
+		EVENT_UPDATE:      { value: Widget.UpdateEvent },
+		EVENT_RUNNING:     { value: Widget.RunningEvent },
+		EVENT_WIDGET:      { value: Widget.WidgetEvent },
+
+		uidOf:             { value: uidOf },
+		empty:             { value: empty },
+		clone:             { value: clone },
+		mixin:             { value: mixin },
+		Dataset:           { value: Dataset },
+		Subject:           { value: Subject },
+
+		isWidget:          { value: Widget.isWidget },
+		isBuilt:           { value: Widget.isBuilt },
+		register:          { value: Widget.register },
+		registered:        { value: Widget.registered },
+		from:              { value: Widget.from },
+		run:               { value: Widget.run },
+
+		observeUpdate: { value: function (callback) {
+
+			this.observe(Widget.UpdateEvent, callback)
+
+		}},
+
+		observeRunning: { value: function (callback) {
+
+			this.observe(Widget.RunningEvent, callback)
+
+		}},
+
+		observeWidget: { value: function (callback) {
+
+			this.observe(Widget.WidgetEvent, callback)
+
+		}}
+
+	})
+
+	return Brickrouge;
+
+}());
+//# sourceMappingURL=brickrouge.js.map

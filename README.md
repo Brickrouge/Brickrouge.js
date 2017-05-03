@@ -243,7 +243,7 @@ and creates it if needed.
 To build **Brickrouge.js** you first need to [install
 webpack](http://webpack.github.io/docs/installation.html) and the `harmony` branch of
 [Uglifyjs2](https://github.com/mishoo/UglifyJS2), then just use the command `make`. The files
-`dist/brickrouge.js` and `dist/brickrouge-uncompressed.js` should be built.
+`dist/main.js` and `dist/brickrouge-uncompressed.js` should be built.
 
 ```bash
 $ git clone git@github.com:Brickrouge/Brickrouge.js.git
@@ -257,7 +257,7 @@ $ make
 
 ## License
 
-**brickrouge.js** is licensed under the New BSD License - See the [LICENSE](LICENSE) file for details.
+**main.js** is licensed under the New BSD License - See the [LICENSE](LICENSE) file for details.
 
 
 

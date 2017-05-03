@@ -42,7 +42,7 @@ export function factory(type)
  */
 export function isWidget(node)
 {
-	return typeof node == 'object' && 'getAttribute' in node && !!node.getAttribute(IS_ATTRIBUTE)
+	return typeof node === 'object' && 'getAttribute' in node && !!node.getAttribute(IS_ATTRIBUTE)
 }
 
 /**
@@ -256,7 +256,7 @@ function monitor()
 
 		setInterval(() => {
 
-			if (previousState == document.body.innerHTML) {
+			if (previousState === document.body.innerHTML) {
 				return
 			}
 

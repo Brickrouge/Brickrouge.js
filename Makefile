@@ -1,5 +1,6 @@
-BRICKROUGE_JS_UNCOMPRESSED = dist/brickrouge.js
-BRICKROUGE_JS_COMPRESSED = dist/brickrouge.min.js
+BRICKROUGE_JS_UMD = dist/brickrouge.umd.js
+BRICKROUGE_JS_UMD_MIN = dist/brickrouge.umd.min.js
+BRICKROUGE_JS_ES = dist/brickrouge.es2015.js
 BRICKROUGE_JS_FILES = $(shell ls src/*.js node_modules/olvlvl-subject/*.js node_modules/olvlvl-mixin/*.js)
 
 JS_COMPRESSOR = `which uglifyjs` $^ \
@@ -12,29 +13,33 @@ JS_COMPRESSOR = `which uglifyjs` $^ \
 
 all: \
 	node_modules \
-	$(BRICKROUGE_JS_UNCOMPRESSED) \
-	$(BRICKROUGE_JS_COMPRESSED)
+	$(BRICKROUGE_JS_UMD) \
+	$(BRICKROUGE_JS_UMD_MIN) \
+	$(BRICKROUGE_JS_ES)
 
 node_modules:
 	npm install
 
-$(BRICKROUGE_JS_UNCOMPRESSED): $(BRICKROUGE_JS_FILES)
+$(BRICKROUGE_JS_UMD): $(BRICKROUGE_JS_FILES)
 	rollup \
-	-f iife \
+	-f umd \
 	-i src/Brickrouge.js \
 	-o $@ \
 	-m $@.map \
 	--name Brickrouge
 
-$(BRICKROUGE_JS_COMPRESSED): $(BRICKROUGE_JS_UNCOMPRESSED)
+$(BRICKROUGE_JS_ES): $(BRICKROUGE_JS_FILES)
+	rollup \
+	-f es \
+	-i src/Brickrouge.js \
+	-o $@ \
+	-m $@.map \
+	--name Brickrouge
+
+$(BRICKROUGE_JS_UMD_MIN): $(BRICKROUGE_JS_UMD)
 	$(JS_COMPRESSOR) > $@
 
 clean:
-	rm  -f $(BRICKROUGE_JS_COMPRESSED)
-	rm  -f $(BRICKROUGE_JS_UNCOMPRESSED)
 	rm -Rf node_modules
-
-watch:
-	webpack --progress --colors --watch
 
 .PHONY: all clean watch

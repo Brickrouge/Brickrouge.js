@@ -1,1 +1,1 @@
-export * from '../node_modules/olvlvl-subject/src/Subject'
+export { default } from '../node_modules/olvlvl-subject/src/Subject'

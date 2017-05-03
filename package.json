@@ -2,8 +2,9 @@
   "name": "brickrouge",
   "version": "0.4.0",
   "description": "Creates interoperable custom elements",
-  "author": "Olivier LAVIALE <olivier.laviale@gmail.com> (http://olvlvl.com)",
-  "main": "dist/brickrouge.js",
+  "author": "Olivier LAVIALE <olivier.laviale@gmail.com> (https://olvlvl.com)",
+  "main": "dist/brickrouge.umd.js",
+  "module": "src/brickrouge.es2015.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/Brickrouge/Brickrouge.js"

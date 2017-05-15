@@ -298,11 +298,13 @@ var Subject = class
 	}
 };
 
+const createEvent = Subject.createEvent;
+
 /**
  * @event Brickrouge#running
  * @type {Function}
  */
-const RunningEvent = Subject.createEvent(function () {
+const RunningEvent = createEvent(function () {
 
 });
 
@@ -313,7 +315,7 @@ const RunningEvent = Subject.createEvent(function () {
  * @type {Function}
  * @property {object} widget - The widget that was built.
  */
-const WidgetEvent = Subject.createEvent(function (widget) {
+const WidgetEvent = createEvent(function (widget) {
 
 	this.widget = widget;
 
@@ -330,7 +332,7 @@ const WidgetEvent = Subject.createEvent(function (widget) {
  * @property {Array<Element>} elements - The new widget elements.
  * @property {Array<object>} widgets - The widgets that were built.
  */
-const UpdateEvent = Subject.createEvent(function (fragment, elements, widgets) {
+const UpdateEvent = createEvent(function (fragment, elements, widgets) {
 
 	this.fragment = fragment;
 	this.elements = elements;
@@ -643,10 +645,6 @@ var Widget = {
 	OPTIONS_ATTRIBUTE: OPTIONS_ATTRIBUTE,
 	SELECTOR: WIDGET_SELECTOR,
 
-	UpdateEvent: UpdateEvent,
-	RunningEvent: RunningEvent,
-	WidgetEvent: WidgetEvent,
-
 	isWidget: isWidget,
 	isBuilt: isBuilt,
 	register: register,
@@ -679,10 +677,6 @@ function clone(element) {
 
 var Brickrouge = Object.defineProperties(Brickrouge$1, {
 
-	EVENT_UPDATE:      { value: Widget.UpdateEvent },
-	EVENT_RUNNING:     { value: Widget.RunningEvent },
-	EVENT_WIDGET:      { value: Widget.WidgetEvent },
-
 	uidOf:             { value: uidOf },
 	empty:             { value: empty },
 	clone:             { value: clone },
@@ -699,19 +693,19 @@ var Brickrouge = Object.defineProperties(Brickrouge$1, {
 
 	observeUpdate: { value: function (callback) {
 
-		this.observe(Widget.UpdateEvent, callback);
+		this.observe(UpdateEvent, callback);
 
 	}},
 
 	observeRunning: { value: function (callback) {
 
-		this.observe(Widget.RunningEvent, callback);
+		this.observe(RunningEvent, callback);
 
 	}},
 
 	observeWidget: { value: function (callback) {
 
-		this.observe(Widget.WidgetEvent, callback);
+		this.observe(WidgetEvent, callback);
 
 	}}
 

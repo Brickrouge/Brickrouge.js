@@ -3,13 +3,10 @@ import { clone } from './clone'
 import Dataset from './Dataset'
 import Subject from './Subject'
 import Widget from './widget'
+import { UpdateEvent, RunningEvent, WidgetEvent } from './events'
 import Brickrouge from './stub'
 
 export default Object.defineProperties(Brickrouge, {
-
-	EVENT_UPDATE:      { value: Widget.UpdateEvent },
-	EVENT_RUNNING:     { value: Widget.RunningEvent },
-	EVENT_WIDGET:      { value: Widget.WidgetEvent },
 
 	uidOf:             { value: uidOf },
 	empty:             { value: empty },
@@ -27,19 +24,19 @@ export default Object.defineProperties(Brickrouge, {
 
 	observeUpdate: { value: function (callback) {
 
-		this.observe(Widget.UpdateEvent, callback)
+		this.observe(UpdateEvent, callback)
 
 	}},
 
 	observeRunning: { value: function (callback) {
 
-		this.observe(Widget.RunningEvent, callback)
+		this.observe(RunningEvent, callback)
 
 	}},
 
 	observeWidget: { value: function (callback) {
 
-		this.observe(Widget.WidgetEvent, callback)
+		this.observe(WidgetEvent, callback)
 
 	}}
 

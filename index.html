@@ -5,7 +5,7 @@
 </head>
 <body>
 
-<script src="dist/brickrouge.umd.min.js"></script>
+<script src="dist/brickrouge.umd.js"></script>
 
 <div class="doc-example">
 
@@ -107,37 +107,15 @@
 
 	} (Brickrouge)
 
-	Brickrouge.observe(Brickrouge.EVENT_RUNNING, function (ev) {
-
-		console.log('running:', ev)
-
-	})
-
 	Brickrouge.observeRunning(function (ev) {
 
 		console.log('observeRunning:', ev)
 
 	})
 
-	Brickrouge.observe(Brickrouge.EVENT_WIDGET, function (ev) {
-
-		console.log('widget:', ev)
-
-	})
-
 	Brickrouge.observeWidget(function (ev) {
 
 		console.log('observeWidget:', ev)
-
-	})
-
-	/**
-	 * @param {Brickrouge.EVENT_UPDATE} ev
-	 * @listens Brickrouge#widget
-	 */
-	Brickrouge.observe(Brickrouge.EVENT_UPDATE, function (ev) {
-
-		console.log('update:', ev)
 
 	})
 

@@ -300,10 +300,6 @@ export default {
 	OPTIONS_ATTRIBUTE: OPTIONS_ATTRIBUTE,
 	SELECTOR: WIDGET_SELECTOR,
 
-	UpdateEvent: UpdateEvent,
-	RunningEvent: RunningEvent,
-	WidgetEvent: WidgetEvent,
-
 	isWidget: isWidget,
 	isBuilt: isBuilt,
 	register: register,

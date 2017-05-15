@@ -1,10 +1,12 @@
 import Subject from './Subject'
 
+const createEvent = Subject.createEvent
+
 /**
  * @event Brickrouge#running
  * @type {Function}
  */
-export const RunningEvent = Subject.createEvent(function () {
+export const RunningEvent = createEvent(function () {
 
 })
 
@@ -15,7 +17,7 @@ export const RunningEvent = Subject.createEvent(function () {
  * @type {Function}
  * @property {object} widget - The widget that was built.
  */
-export const WidgetEvent = Subject.createEvent(function (widget) {
+export const WidgetEvent = createEvent(function (widget) {
 
 	this.widget = widget
 
@@ -32,7 +34,7 @@ export const WidgetEvent = Subject.createEvent(function (widget) {
  * @property {Array<Element>} elements - The new widget elements.
  * @property {Array<object>} widgets - The widgets that were built.
  */
-export const UpdateEvent = Subject.createEvent(function (fragment, elements, widgets) {
+export const UpdateEvent = createEvent(function (fragment, elements, widgets) {
 
 	this.fragment = fragment
 	this.elements = elements

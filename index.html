@@ -60,12 +60,15 @@
 
 			element.style.backgroundColor = rainbow(32, ++n % 32)
 
-			setInterval(function () {
+			function render() {
 
 				element.innerHTML = (new Date).toISOString()
 
-			}, 1000)
+			}
 
+			render()
+
+			setInterval(render, 1000)
 		}
 
 		Brickrouge.register('clone', function(element, options) {

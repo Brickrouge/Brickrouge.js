@@ -1,7 +1,7 @@
-import { uidOf } from './utils'
-import Dataset from './Dataset'
-import { RunningEvent, WidgetEvent, UpdateEvent } from './events'
 import Brickrouge from './stub'
+import Dataset from './Dataset'
+import { WidgetEvent, UpdateEvent } from './events'
+import { uidOf } from './utils'
 
 export const IS_ATTRIBUTE = 'brickrouge-is'
 export const BUILT_ATTRIBUTE = 'brickrouge-built'
@@ -282,15 +282,12 @@ export function register(type, factory)
 }
 
 /**
- * @fires Brickrouge#running
+ * Launch the widget monitor and create initial widgets.
  */
-export function run() {
-
+export function run()
+{
 	monitor()
 	parse(document.body)
-
-	Brickrouge.notify(new RunningEvent)
-
 }
 
 export default {
@@ -299,12 +296,5 @@ export default {
 	BUILT_ATTRIBUTE: BUILT_ATTRIBUTE,
 	OPTIONS_ATTRIBUTE: OPTIONS_ATTRIBUTE,
 	SELECTOR: WIDGET_SELECTOR,
-
-	isWidget: isWidget,
-	isBuilt: isBuilt,
-	register: register,
-	registered: factory,
-	from: createOrReuse,
-	run: run
 
 }

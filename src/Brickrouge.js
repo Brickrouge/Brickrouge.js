@@ -1,26 +1,32 @@
-import { uidOf, empty, mixin } from './utils'
-import { clone } from './clone'
-import Dataset from './Dataset'
-import Subject from './Subject'
-import Widget from './widget'
+import {
+	run as widgetRun,
+	isWidget,
+	isBuilt,
+	register,
+	factory,
+	createOrReuse
+} from './widget'
+
 import { UpdateEvent, RunningEvent, WidgetEvent } from './events'
 import Brickrouge from './stub'
 
+/**
+ * @fires Brickrouge#running
+ */
+function run()
+{
+	widgetRun()
+	Brickrouge.notify(new RunningEvent)
+}
+
 export default Object.defineProperties(Brickrouge, {
 
-	uidOf:             { value: uidOf },
-	empty:             { value: empty },
-	clone:             { value: clone },
-	mixin:             { value: mixin },
-	Dataset:           { value: Dataset },
-	Subject:           { value: Subject },
-
-	isWidget:          { value: Widget.isWidget },
-	isBuilt:           { value: Widget.isBuilt },
-	register:          { value: Widget.register },
-	registered:        { value: Widget.registered },
-	from:              { value: Widget.from },
-	run:               { value: Widget.run },
+	isWidget:   { value: isWidget },
+	isBuilt:    { value: isBuilt },
+	register:   { value: register },
+	registered: { value: factory },
+	from:       { value: createOrReuse },
+	run:        { value: run },
 
 	observeUpdate: { value: function (callback) {
 

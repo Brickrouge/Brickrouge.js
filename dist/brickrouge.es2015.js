@@ -1,107 +1,3 @@
-const UNIQUE_NUMBER_PROPERTY = 'uniqueNumber';
-
-let uniqueNumberIndex = 0;
-
-/**
- * Return the unique identifier a node.
- *
- * @param {Node} node
- *
- * @return {number}
- */
-function uidOf(node) {
-
-	return node[UNIQUE_NUMBER_PROPERTY] || (node[UNIQUE_NUMBER_PROPERTY] = ++uniqueNumberIndex)
-
-}
-
-/**
- * Efficiently empty an element.
- *
- * @param {Element} element
- */
-function empty(element) {
-
-	while (element.firstChild)
-	{
-		element.removeChild(element.firstChild);
-	}
-
-}
-
-/**
- * @param {Function} Base The parent class to extend.
- * @param ...mixins The classes to mix in.
- *
- * @returns {{}}
- */
-function mixin(Base /*, ...mixins*/)
-{
-	const properties = {};
-	const mixins = Array.prototype.slice.call(arguments, 1); // until nodejs gets rest parameters
-
-	for (let mixin of mixins) {
-		let prototype = mixin.prototype;
-		for (let property of Object.getOwnPropertyNames(prototype)) {
-			properties[property] = { value: prototype[property] };
-		}
-	}
-
-	delete properties.constructor;
-
-	const mixed = class extends Base {};
-
-	Object.defineProperties(mixed.prototype, properties);
-
-	return mixed
-}
-
-/**
- * Camel case dashed-name.
- *
- * @param {string} string
- *
- * @return {string}
- */
-function camelCase(string) {
-
-	return String(string).replace(/-\D/g, match => {
-
-		return match.charAt(1).toUpperCase()
-
-	})
-
-}
-
-/**
- * Return the dataset values.
- *
- * @param {Element} element
- *
- * @return {Object}
- */
-function from(element) {
-
-	const dataset = {};
-	const attributes = element.attributes;
-
-	for (let attr of attributes)
-	{
-		if (!attr.name.match(/^data-/)) continue
-
-		dataset[camelCase(attr.name.substring(5))] = attr.value;
-	}
-
-	return dataset
-
-}
-
-var Dataset = {
-
-	from: from
-
-};
-
 const OBSERVERS_PROPERTY = Symbol("Subject observers");
 const NAME_PROPERTY = Symbol("Subject event name");
 
@@ -292,6 +188,147 @@ var Subject = class
 	}
 };
 
+/**
+ * Camel case dashed-name.
+ *
+ * @param {string} string
+ *
+ * @return {string}
+ */
+function camelCase(string) {
+
+	return String(string).replace(/-\D/g, match => {
+
+		return match.charAt(1).toUpperCase()
+
+	})
+
+}
+
+/**
+ * Return the dataset values.
+ *
+ * @param {Element} element
+ *
+ * @return {Object}
+ */
+function from(element) {
+
+	const dataset = {};
+	const attributes = element.attributes;
+
+	for (let attr of attributes)
+	{
+		if (!attr.name.match(/^data-/)) continue
+
+		dataset[camelCase(attr.name.substring(5))] = attr.value;
+	}
+
+	return dataset
+
+}
+
+var Dataset = {
+
+	from: from
+
+};
+
+const UNIQUE_NUMBER_PROPERTY = 'uniqueNumber';
+
+let uniqueNumberIndex = 0;
+
+/**
+ * Return the unique identifier a node.
+ *
+ * @param {Node} node
+ *
+ * @return {number}
+ */
+function uidOf(node) {
+
+	return node[UNIQUE_NUMBER_PROPERTY] || (node[UNIQUE_NUMBER_PROPERTY] = ++uniqueNumberIndex)
+
+}
+
+/**
+ * Efficiently empty an element.
+ *
+ * @param {Element} element
+ */
+function empty(element) {
+
+	while (element.firstChild)
+	{
+		element.removeChild(element.firstChild);
+	}
+
+}
+
+/**
+ * @param {Function} Base The parent class to extend.
+ * @param ...mixins The classes to mix in.
+ *
+ * @returns {{}}
+ */
+function mixin(Base /*, ...mixins*/)
+{
+	const properties = {};
+	const mixins = Array.prototype.slice.call(arguments, 1); // until nodejs gets rest parameters
+
+	for (let mixin of mixins) {
+		let prototype = mixin.prototype;
+		for (let property of Object.getOwnPropertyNames(prototype)) {
+			properties[property] = { value: prototype[property] };
+		}
+	}
+
+	delete properties.constructor;
+
+	const mixed = class extends Base {};
+
+	Object.defineProperties(mixed.prototype, properties);
+
+	return mixed
+}
+
+/**
+ * Clone a custom element, taking care of removing sensitive attributes.
+ *
+ * @param {Element} element
+ *
+ * @returns {Element}
+ */
+function clone(element) {
+
+	const clone = element.cloneNode(true);
+
+	clone.removeAttribute(BUILT_ATTRIBUTE);
+	Array.prototype.forEach.call(clone.querySelectorAll('[' + BUILT_ATTRIBUTE + ']'), element => {
+
+		element.removeAttribute(BUILT_ATTRIBUTE);
+
+	});
+
+	return clone
+}
+
+var Brickrouge$1 = Object.defineProperties({}, {
+
+	Dataset:           { value: Dataset },
+	Subject:           { value: Subject },
+
+	uidOf:             { value: uidOf },
+	empty:             { value: empty },
+	mixin:             { value: mixin },
+	clone:             { value: clone },
+
+	notify:            { value: Subject.prototype.notify },
+	observe:           { value: Subject.prototype.observe },
+	unobserve:         { value: Subject.prototype.unobserve }
+
+});
+
 const createEvent = Subject.createEvent;
 
 /**
@@ -334,18 +371,10 @@ const UpdateEvent = createEvent(function (fragment, elements, widgets) {
 
 });
 
-var Brickrouge$1 = {
-
-	notify:    Subject.prototype.notify,
-	observe:   Subject.prototype.observe,
-	unobserve: Subject.prototype.unobserve
-
-};
-
 const IS_ATTRIBUTE = 'brickrouge-is';
 const BUILT_ATTRIBUTE = 'brickrouge-built';
 const OPTIONS_ATTRIBUTE = 'brickrouge-options';
-const WIDGET_SELECTOR = '[' + IS_ATTRIBUTE + ']';
+
 const INVALID_IS_ATTRIBUTE = 'brickrouge-invalid-is';
 const WIDGET_NOT_BUILT_SELECTOR = '[' + IS_ATTRIBUTE + ']:not([' + BUILT_ATTRIBUTE + '])';
 
@@ -621,69 +650,31 @@ function register(type, factory)
 }
 
 /**
- * @fires Brickrouge#running
+ * Launch the widget monitor and create initial widgets.
  */
-function run() {
-
+function run$1()
+{
 	monitor();
 	parse(document.body);
-
-	Brickrouge$1.notify(new RunningEvent);
-
 }
 
-var Widget = {
-
-	IS_ATTRIBUTE: IS_ATTRIBUTE,
-	BUILT_ATTRIBUTE: BUILT_ATTRIBUTE,
-	OPTIONS_ATTRIBUTE: OPTIONS_ATTRIBUTE,
-	SELECTOR: WIDGET_SELECTOR,
-
-	isWidget: isWidget,
-	isBuilt: isBuilt,
-	register: register,
-	registered: factory,
-	from: createOrReuse,
-	run: run
-
-};
-
 /**
- * Clone a custom element, taking care of removing sensitive attributes.
- *
- * @param {Element} element
- *
- * @returns {Element}
+ * @fires Brickrouge#running
  */
-function clone(element) {
-
-	const clone = element.cloneNode(true);
-
-	clone.removeAttribute(BUILT_ATTRIBUTE);
-	Array.prototype.forEach.call(clone.querySelectorAll('[' + BUILT_ATTRIBUTE + ']'), element => {
-
-		element.removeAttribute(BUILT_ATTRIBUTE);
-
-	});
-
-	return clone
+function run$$1()
+{
+	run$1();
+	Brickrouge$1.notify(new RunningEvent);
 }
 
 var Brickrouge = Object.defineProperties(Brickrouge$1, {
 
-	uidOf:             { value: uidOf },
-	empty:             { value: empty },
-	clone:             { value: clone },
-	mixin:             { value: mixin },
-	Dataset:           { value: Dataset },
-	Subject:           { value: Subject },
-
-	isWidget:          { value: Widget.isWidget },
-	isBuilt:           { value: Widget.isBuilt },
-	register:          { value: Widget.register },
-	registered:        { value: Widget.registered },
-	from:              { value: Widget.from },
-	run:               { value: Widget.run },
+	isWidget:   { value: isWidget },
+	isBuilt:    { value: isBuilt },
+	register:   { value: register },
+	registered: { value: factory },
+	from:       { value: createOrReuse },
+	run:        { value: run$$1 },
 
 	observeUpdate: { value: function (callback) {
 

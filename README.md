@@ -77,18 +77,14 @@ The _widget_ event is fired after a widget has been built.
 
 ```js
 /**
- * @param {Brickrouge.EVENT_WIDGET} ev
+ * @param {Brickrouge.WidgetEvent} ev
  * @listens Brickrouge#widget
  */
-Brickrouge.observe(Brickrouge.EVENT_WIDGET, ev => {
+Brickrouge.observeWidget(ev => {
 
     console.log('A widget has been built:', ev.widget)
 
 })
-
-// or
-
-Brickrouge.observeWidget(ev => { … })
 ```
 
 
@@ -101,20 +97,16 @@ The _update_ event is fired after the DOM was updated.
 
 ```js
 /**
- * @param {Brickrouge.EVENT_UPDATE} ev
+ * @param {Brickrouge.UpdateEvent} ev
  * @listens Brickrouge#update
  */
-Brickrouge.observe(Brickrouge.EVENT_UPDATE, ev => {
+Brickrouge.observeUpdate(ev => {
 
     console.log('This fragment updated the DOM:', ev.fragment)
     console.log('These elements are new widgets:', ev.elements)
     console.log('These widgets have been built:', ev.widgets)
 
 })
-
-// or
-
-Brickrouge.observeUpdate(ev => { … })
 ```
 
 > **Note:** The event is fired a first time after **Brickrouge** is ran.
@@ -129,18 +121,14 @@ The _running_ event is fired after **Brickrouge** is ran.
 
 ```js
 /**
- * @param {Brickrouge.EVENT_RUNNING} ev
+ * @param {Brickrouge.RunningEvent} ev
  * @listens Brickrouge#running
  */
-Brickrouge.observe(Brickrouge.EVENT_RUNNING, ev => {
+Brickrouge.observeRunning(ev => {
 
 	console.log('Brickrouge is running, we can do stuff')
 
 })
-
-// or
-
-Brickrouge.observeRunning(ev => { … })
 ```
 
 
@@ -154,7 +142,7 @@ Brickrouge.observeRunning(ev => { … })
 
 	```js
 	var element = document.getElementById('my-element')
-	
+
 	if (Brickrouge.isWidget(element)
 	{
 		console.log('is an widget')
@@ -169,7 +157,7 @@ Brickrouge.observeRunning(ev => { … })
 
 	```js
 	var element = document.getElementById('my-element')
-	
+
 	if (Brickrouge.isBuilt(element)
 	{
 		console.log('widget is built')
@@ -194,7 +182,7 @@ its own.
 
 	```js
 	var element = document.getElementById('my-element')
-	
+
 	Brickrouge.empty(element)
 	```
 
@@ -217,7 +205,7 @@ and creates it if needed.
 
 	```js
 	var element = document.getElementById('my-element')
-	
+
 	try
 	{
 		var widget = Brickrouge.from(element) 
